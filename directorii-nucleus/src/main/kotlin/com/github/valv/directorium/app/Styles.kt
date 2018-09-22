@@ -8,6 +8,7 @@ class Styles : Stylesheet() {
         val heading by cssclass()
         val basis by cssclass()
         val circle by cssclass()
+        val bigCircle by cssclass()
     }
 
     init {

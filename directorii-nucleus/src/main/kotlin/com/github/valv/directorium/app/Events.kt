@@ -9,6 +9,7 @@ class Events {
     class CommandTreePopulate(val categories: Map<Category, List<Section>>) : FXEvent()
     class CommandTableItemsSet(val table: Table): FXEvent()
     class CommandLoadSection(val section: Section): FXEvent()
+    class CommandStatusDisplay(val status: String): FXEvent()
 
     object CommandAddColumn : FXEvent()
     object CommandDeleteColumn : FXEvent()

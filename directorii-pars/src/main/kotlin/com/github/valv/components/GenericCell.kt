@@ -1,11 +1,10 @@
 package com.github.valv.components
 
 import javafx.beans.property.ObjectProperty
-import javafx.collections.ObservableList
 import javafx.scene.control.TableCell
 import javafx.scene.control.TextField
 
-class StringCell: TableCell<ObservableList<ObjectProperty<*>>, Any>() {
+class GenericCell<T>: TableCell<MutableList<ItemViewModel<T>>, T>() {
     private val editor = TextField()
     lateinit var oldText: String
     lateinit var list: ObjectProperty<*>
@@ -15,7 +14,7 @@ class StringCell: TableCell<ObservableList<ObjectProperty<*>>, Any>() {
         //list = tableView.focusModel.focusedCellProperty().toProperty()
         editor.text = text
         graphic = editor
-        oldText = text
+        //oldText = text
         text = null
     }
 
@@ -26,10 +25,10 @@ class StringCell: TableCell<ObservableList<ObjectProperty<*>>, Any>() {
         //observableList[observableList.indexOf(list)] = newExpense
         //list.value = editor.text as Any
         graphic = null
-        text = oldText
+        text = editor.text
     }
 
-    override fun updateItem(item: Any?, empty: Boolean) {
+    override fun updateItem(item: T?, empty: Boolean) {
         super.updateItem(item, empty)
         when {
             empty -> { text = null; graphic = null }

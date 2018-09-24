@@ -1,6 +1,6 @@
 package com.github.valv.directorium.view
 
-import com.github.valv.components.StringCell
+import com.github.valv.components.GenericCell
 import com.github.valv.directorium.app.Data
 import com.github.valv.directorium.app.Styles
 import com.github.valv.directorium.app.Events.*
@@ -8,15 +8,10 @@ import com.github.valv.directorium.app.Data.*
 import javafx.application.Platform
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.value.ObservableValue
-import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import tornadofx.*
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 
 class MainView : View("Directorium") {
     val table = Table()
@@ -76,7 +71,7 @@ class MainView : View("Directorium") {
             }
         }
         center {
-            tableview<ObservableList<ObjectProperty<*>>> {
+            tableview<MutableList<ItemViewModel<Any>>> {
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
                 isEditable = true
                 //multiSelect()
@@ -111,6 +106,8 @@ class MainView : View("Directorium") {
                         action {
                             addRecord()
                             fire(CommandTableItemsSet(table))
+                            table.contents.first().first().item = "Test Observable"
+                            println(table.contents.first().first().itemProperty)
                         }
                     }
                     region {
@@ -135,26 +132,28 @@ class MainView : View("Directorium") {
 
     init {
         subscribe<CommandQuit> { Platform.exit() }
+        subscribe<CommandDebug> { println(table.contents) }
         runLater {
             fire(CommandTreePopulate(Data.categories))
             addField(table, "First Column", "First Data")
-            addRecord()
-            addRecord()
             fire(CommandTableItemsSet(table))
+            addRecord()
+            addRecord()
         }
     }
 
     private fun <T: Any> addField(table: Table, name: String, data: T) {
         val columnProperty: ObjectProperty<T> = SimpleObjectProperty<T>(data)
-        val column = TableColumn<ObservableList<ObjectProperty<*>>, T>(name)
+        val columnItem = ItemViewModel<T>(data)
+        val column = TableColumn<MutableList<ItemViewModel<T>>, T>(name)
         /*column.graphic = button("✗") {
             addClass("circle")
             action { println("${width}x${height}") }
         }*/
-        column.setCellValueFactory { columnProperty as ObservableValue<T> }
-        column.setCellFactory { StringCell() as TableCell<ObservableList<ObjectProperty<*>>, T> }
-        table.header.add(column)
-        table.contents.forEach { it.add(SimpleObjectProperty<T>(data)) }
+        column.setCellValueFactory { columnItem.itemProperty }
+        println(columnItem.itemProperty)
+        column.setCellFactory { GenericCell<T>() as TableCell<MutableList<ItemViewModel<T>>, T> }
+        table.header.add(column as TableColumn<MutableList<ItemViewModel<Any>>, Any>)
     }
 /*
     @PublishedApi()
@@ -166,12 +165,19 @@ class MainView : View("Directorium") {
     }
 */
     private fun addRecord() {
-        val record = FXCollections.observableArrayList<ObjectProperty<*>>()
+        val record = mutableListOf<ItemViewModel<Any>>()
         table.header.forEach {
-            fun <S, T> translate(c: TableColumn<S, T>): ObjectProperty<T> =
-                    SimpleObjectProperty<T>(c.getCellData(null))
-            record.add(translate(it))
+            //fun <S, T> translate(c: TableColumn<S, T>) = ItemViewModel<T>(c.getCellData(null))
+            record.add(ItemViewModel(it.getCellData(null)))
         }
         table.contents.add(record)
+    }
+
+    class TableController: Controller() {
+        fun makeField(name: String, items: List<ItemViewModel<*>>) {
+            fire(CommandTableAddField {
+                //column(name, items.last()::itemProperty)
+            })
+        }
     }
 }

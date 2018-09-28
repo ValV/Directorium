@@ -1,5 +1,6 @@
 package com.github.valv.directorium.app
 
+import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import tornadofx.*
@@ -14,6 +15,9 @@ class Data: Controller() {
             Data.Section("Ambient", "Music"),
             Data.Section("Industrial", "Music")).groupBy { Data.Category(it.category) }
 
-    fun makeField() {
+    fun addRecord() {
+        val list = mutableListOf<ObservableValue<Any>>().observable()
+        fields.forEach { list.add(SimpleObjectProperty(it)) }
+        records.add(list)
     }
 }

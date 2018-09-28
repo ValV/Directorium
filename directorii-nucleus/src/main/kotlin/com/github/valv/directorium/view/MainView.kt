@@ -109,12 +109,7 @@ class MainView : View("Directorium") {
                         }
                     }
                     button("⊕▤") { //▸↳⊖
-                        action {
-                            // TODO: move to Controller
-                            val list = mutableListOf<ObservableValue<Any>>().observable()
-                            dataState.fields.forEach { list.add(SimpleObjectProperty(it)) }
-                            dataState.records.add(list)
-                        }
+                        action { dataState.addRecord() }
                     }
                     region {
                         hgrow = Priority.ALWAYS

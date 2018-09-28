@@ -15,7 +15,7 @@ import javafx.util.converter.*
 import tornadofx.*
 
 class MainView : View("Directorium") {
-    val dataState: DataState by inject()
+    val dataState: Data by inject()
 
     override val root = borderpane {
         addClass(Styles.basis)
@@ -140,16 +140,7 @@ class MainView : View("Directorium") {
         subscribe<CommandQuit> { Platform.exit() }
         subscribe<CommandDebug> { println("Debug Message!") } // TODO: remove after tests are implemented
         runLater {
-            fire(CommandTreePopulate(Data.categories))
-        }
-    }
-
-    // TODO: move the controller to separate module
-    class DataState: Controller() {
-        val fields = mutableListOf<Any>()
-        val records = mutableListOf<ObservableList<ObservableValue<Any>>>().observable()
-
-        fun makeField() {
+            fire(CommandTreePopulate(dataState.categories))
         }
     }
 }

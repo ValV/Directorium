@@ -22,7 +22,6 @@ class Events {
     object CommandDeleteSection: FXEvent()
 
     // TableView events
-    //class CommandTableItemsSet(val table: Table): FXEvent() // TODO: remove after Data class removed
     class CommandTableAddField<T>(val name: String, var item: T): FXEvent()
 
     object CommandAddColumn: FXEvent()

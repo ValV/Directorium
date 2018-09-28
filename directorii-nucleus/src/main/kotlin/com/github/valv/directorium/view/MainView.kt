@@ -1,20 +1,22 @@
 package com.github.valv.directorium.view
 
-import com.github.valv.components.GenericCell
 import com.github.valv.directorium.app.Data
 import com.github.valv.directorium.app.Styles
 import com.github.valv.directorium.app.Events.*
 import com.github.valv.directorium.app.Data.*
 import javafx.application.Platform
-import javafx.beans.property.ObjectProperty
-import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.*
+import javafx.beans.value.ObservableValue
+import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
+import javafx.util.converter.*
 import tornadofx.*
 
 class MainView : View("Directorium") {
-    val table = Table()
+    val dataState: DataState by inject()
+
     override val root = borderpane {
         addClass(Styles.basis)
         top {
@@ -41,7 +43,7 @@ class MainView : View("Directorium") {
         }
         left {
             treeview<Any> {
-                // Items
+                /* Items */
                 root = TreeItem()
                 isShowRoot = false
                 cellFormat {
@@ -52,7 +54,7 @@ class MainView : View("Directorium") {
                         else -> kotlin.error("Invalid type value")
                     }
                 }
-                // Events
+                /* Events */
                 subscribe<CommandResize> { prefWidth = it.number / 4 }
                 subscribe<CommandTreePopulate> {
                     val categories = it.categories
@@ -71,21 +73,26 @@ class MainView : View("Directorium") {
             }
         }
         center {
-            tableview<MutableList<ItemViewModel<Any>>> {
+            tableview(dataState.records) {
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
                 isEditable = true
-                //multiSelect()
-                // Rows & Columns
-                items = null // set data
-                columns.setAll() // set columns
-                subscribe<CommandTableItemsSet> {
-                    this@tableview.items = it.table.contents
-                    this@tableview.columns.setAll(it.table.header)
+                subscribe<CommandTableAddField<Any>> {
+                    // TODO: move to Controller
+                    val item = it.item
+                    this@tableview.items.forEach { it.add(SimpleObjectProperty(item)) }
+                    column(it.name, SimpleObjectProperty::class) {
+                        setCellValueFactory {
+                            dataState.records[items.indexOf(it.value)][tableView.columns.indexOf(this)]
+                            as ObservableValue<SimpleObjectProperty<*>>
+                        }
+                        (this as TableColumn<ObservableList<*>, String?>).
+                                useTextField(DefaultStringConverter())
+                        dataState.fields.add(item)
+                    }
                 }
                 focusModel.focusedCellProperty().addListener { _, _, y ->
                     fire(CommandStatusDisplay("${y.row}:${y.column}"))
                 }
-                //selectionModel.selectedItemProperty().addListener { _ -> println(focusModel.focusedCell) }
             }
         }
         bottom {
@@ -98,16 +105,15 @@ class MainView : View("Directorium") {
                     }
                     button("⊕▥") { //▾↴⊖
                         action {
-                            addField(table, "Added", 0.0)
-                            fire(CommandTableItemsSet(table))
+                            fire(CommandTableAddField("Field", "value"))
                         }
                     }
                     button("⊕▤") { //▸↳⊖
                         action {
-                            addRecord()
-                            fire(CommandTableItemsSet(table))
-                            table.contents.first().first().item = "Test Observable"
-                            println(table.contents.first().first().itemProperty)
+                            // TODO: move to Controller
+                            val list = mutableListOf<ObservableValue<Any>>().observable()
+                            dataState.fields.forEach { list.add(SimpleObjectProperty(it)) }
+                            dataState.records.add(list)
                         }
                     }
                     region {
@@ -132,52 +138,18 @@ class MainView : View("Directorium") {
 
     init {
         subscribe<CommandQuit> { Platform.exit() }
-        subscribe<CommandDebug> { println(table.contents) }
+        subscribe<CommandDebug> { println("Debug Message!") } // TODO: remove after tests are implemented
         runLater {
             fire(CommandTreePopulate(Data.categories))
-            addField(table, "First Column", "First Data")
-            fire(CommandTableItemsSet(table))
-            addRecord()
-            addRecord()
         }
     }
 
-    private fun <T: Any> addField(table: Table, name: String, data: T) {
-        val columnProperty: ObjectProperty<T> = SimpleObjectProperty<T>(data)
-        val columnItem = ItemViewModel<T>(data)
-        val column = TableColumn<MutableList<ItemViewModel<T>>, T>(name)
-        /*column.graphic = button("✗") {
-            addClass("circle")
-            action { println("${width}x${height}") }
-        }*/
-        column.setCellValueFactory { columnItem.itemProperty }
-        println(columnItem.itemProperty)
-        column.setCellFactory { GenericCell<T>() as TableCell<MutableList<ItemViewModel<T>>, T> }
-        table.header.add(column as TableColumn<MutableList<ItemViewModel<Any>>, Any>)
-    }
-/*
-    @PublishedApi()
-    internal open class TypeBase<T>
-    inline fun <reified T> typeTokenOf(): Type {
-        val base = object: TypeBase<T>() {}
-        val superType = base::class.java.genericSuperclass!!
-        return (superType as ParameterizedType).actualTypeArguments.first()!!
-    }
-*/
-    private fun addRecord() {
-        val record = mutableListOf<ItemViewModel<Any>>()
-        table.header.forEach {
-            //fun <S, T> translate(c: TableColumn<S, T>) = ItemViewModel<T>(c.getCellData(null))
-            record.add(ItemViewModel(it.getCellData(null)))
-        }
-        table.contents.add(record)
-    }
+    // TODO: move the controller to separate module
+    class DataState: Controller() {
+        val fields = mutableListOf<Any>()
+        val records = mutableListOf<ObservableList<ObservableValue<Any>>>().observable()
 
-    class TableController: Controller() {
-        fun makeField(name: String, items: List<ItemViewModel<*>>) {
-            fire(CommandTableAddField {
-                //column(name, items.last()::itemProperty)
-            })
+        fun makeField() {
         }
     }
 }

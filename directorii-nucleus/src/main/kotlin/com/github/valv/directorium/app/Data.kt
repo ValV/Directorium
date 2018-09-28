@@ -6,6 +6,7 @@ import javafx.collections.ObservableList
 import javafx.scene.control.TableColumn
 import tornadofx.*
 
+// TODO: remove Data class after switch to Controller
 class Data {
     data class Category(val category: String)
     data class Section(val section: String, val category: String)
@@ -24,6 +25,6 @@ class Data {
     companion object {
         val categories = listOf(Data.Section("Sci-fi", "Books"),
                 Data.Section("Ambient", "Music"),
-                Data.Section("Darkwave", "Music")).groupBy { Data.Category(it.category) }
+                Data.Section("Industrial", "Music")).groupBy { Data.Category(it.category) }
     }
 }

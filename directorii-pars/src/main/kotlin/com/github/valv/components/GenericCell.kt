@@ -4,6 +4,7 @@ import javafx.beans.property.ObjectProperty
 import javafx.scene.control.TableCell
 import javafx.scene.control.TextField
 
+// TODO: remove class after `StringConverter`s are implemented
 class GenericCell<T>: TableCell<MutableList<ItemViewModel<T>>, T>() {
     private val editor = TextField()
     lateinit var oldText: String
@@ -12,7 +13,7 @@ class GenericCell<T>: TableCell<MutableList<ItemViewModel<T>>, T>() {
     override fun startEdit() {
         super.startEdit()
         //list = tableView.focusModel.focusedCellProperty().toProperty()
-        editor.text = text
+        editor.text = item.toString()
         graphic = editor
         //oldText = text
         text = null

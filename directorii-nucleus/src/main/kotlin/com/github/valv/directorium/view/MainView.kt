@@ -1,9 +1,9 @@
 package com.github.valv.directorium.view
 
-import com.github.valv.directorium.app.Data
+import com.github.valv.directorium.control.Data
 import com.github.valv.directorium.app.Styles
-import com.github.valv.directorium.app.Events.*
-import com.github.valv.directorium.app.Data.*
+import com.github.valv.directorium.control.Events.*
+import com.github.valv.directorium.control.Data.*
 import javafx.application.Platform
 import javafx.beans.property.*
 import javafx.beans.value.ObservableValue

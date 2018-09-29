@@ -1,6 +1,6 @@
 package com.github.valv.directorium.view
 
-import com.github.valv.directorium.app.Events.*
+import com.github.valv.directorium.control.Events.*
 import tornadofx.*
 
 class MainMenuFragment: Fragment() {

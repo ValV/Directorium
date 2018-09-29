@@ -20,26 +20,7 @@ class MainView : View("Directorium") {
     override val root = borderpane {
         addClass(Styles.basis)
         top {
-            menubar {
-                menu {
-                    text = "⌨ File"
-                    menuitem("⎙ Print", "Ctrl+P") { fire(CommandPrint) }
-                    separator()
-                    menuitem("⏻ Quit", "Ctrl+Q") { fire(CommandQuit)}
-                }
-                menu {
-                    text = "◩ Sections"
-                    menuitem("Add to Category") { fire(CommandAddSection) }
-                    menuitem("Delete selected") { fire(CommandDeleteSection) }
-                }
-                menu {
-                    text = "▦ Data view"
-                    menuitem("⊞↴ Add Field") { fire(CommandAddColumn) }
-                    menuitem("⊟↴ Delete Field") { fire(CommandDeleteColumn) }
-                    menuitem("⊞↳ Add Record") { fire(CommandAddColumn) }
-                    menuitem("⊟↳ Delete Record") { fire(CommandDeleteColumn) }
-                }
-            }
+            add(MainMenuFragment::class)
         }
         left {
             treeview<Any> {

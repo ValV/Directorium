@@ -1,6 +1,5 @@
 package com.github.valv.directorium.control
 
-import com.github.valv.directorium.control.Data.*
 import tornadofx.*
 
 class Events {
@@ -13,8 +12,8 @@ class Events {
     object CommandDebug: FXEvent() // TODO: remove after GUI is stable
 
     // TreeView events
-    class CommandTreePopulate(val categories: Map<Category, List<Section>>): FXEvent()
-    class CommandLoadSection(val section: Section): FXEvent()
+    class CommandTreePopulate<S, T>(val categories: Map<S, List<T>>): FXEvent()
+    class CommandLoadSection<T>(val section: T): FXEvent()
 
     object CommandAddSection: FXEvent()
     object CommandDeleteSection: FXEvent()

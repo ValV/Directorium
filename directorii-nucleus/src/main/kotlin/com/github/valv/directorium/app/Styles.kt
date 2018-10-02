@@ -1,5 +1,6 @@
 package com.github.valv.directorium.app
 
+import javafx.geometry.Pos
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
@@ -38,8 +39,29 @@ class Styles : Stylesheet() {
             //borderInsets += box(0.px)
             backgroundInsets += box(0.px)
         }
+        fieldset {
+            //alignment = Pos.CENTER
+            borderColor += box(c("blue"))
+        }
+        s(field) {
+            //minWidth = 240.px
+            //maxWidth = 400.px
+            borderColor += box(c("green"))
+            alignment = Pos.CENTER_RIGHT
+            comboBox {
+                //maxWidth = Double.MAX_VALUE.px
+                minWidth = 120.px
+                maxWidth = 120.px
+            }
+            inputContainer {
+                minWidth = 200.px
+                borderColor += box(c("red"))
+            }
+        }
         label and heading {
-            padding = box(8.px)
+            minHeight = 24.px
+            maxHeight = 24.px
+            padding = box(0.px, 8.px)
             fontSize = 16.px
             fontWeight = FontWeight.BOLD
         }

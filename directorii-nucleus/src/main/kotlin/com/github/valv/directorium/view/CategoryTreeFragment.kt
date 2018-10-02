@@ -3,6 +3,7 @@ package com.github.valv.directorium.view
 import com.github.valv.directorium.control.Data.*
 import com.github.valv.directorium.control.Events.*
 import javafx.scene.control.TreeItem
+import javafx.scene.layout.Priority.*
 import tornadofx.*
 
 class CategoryTreeFragment: Fragment() {
@@ -10,6 +11,7 @@ class CategoryTreeFragment: Fragment() {
         /* Items */
         root = TreeItem()
         isShowRoot = false
+        vgrow = ALWAYS
         cellFormat {
             text = when (it) {
                 is String -> it

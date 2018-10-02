@@ -8,9 +8,10 @@ import javafx.application.Platform
 import javafx.beans.property.*
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
+import javafx.geometry.Orientation.*
 import javafx.geometry.Pos
 import javafx.scene.control.*
-import javafx.scene.layout.Priority
+import javafx.scene.layout.Priority.*
 import javafx.util.converter.*
 import tornadofx.*
 
@@ -19,11 +20,15 @@ class MainView : View("Directorium") {
 
     override val root = borderpane {
         addClass(Styles.basis)
+        widthProperty().addListener { _, _, new -> fire(CommandResize(new.toDouble())) }
         top {
             add(MainMenuFragment::class)
         }
         left {
-            add(CategoryTreeFragment::class)
+            vbox {
+                label(title) { addClass(Styles.heading) }
+                add(CategoryTreeFragment::class)
+            }
         }
         center {
             tableview(dataState.records) {
@@ -51,41 +56,54 @@ class MainView : View("Directorium") {
         bottom {
             vbox {
                 hbox {
-                    padding = insets(4)
-                    alignment = Pos.BASELINE_RIGHT
-                    label(title) {
-                        addClass(Styles.heading)
-                    }
-                    button("⊕▥") { //▾↴⊖
-                        action {
-                            fire(CommandTableAddField("Field", "value"))
+                    toolbar {
+                        subscribe<CommandResize> { prefWidth = it.number / 4 }
+                        padding = insets(4)
+                        button("⊕◩") {
+                            action { fire(CommandAddSection) }
+                        }
+                        button("⊖◩") {
+                            action { fire(CommandDeleteSection) }
                         }
                     }
-                    button("⊕▤") { //▸↳⊖
-                        action { dataState.addRecord() }
-                    }
-                    region {
-                        hgrow = Priority.ALWAYS
-                    }
-                    button {
-                        text = "Close"
-                        action {
-                            fire(CommandQuit)
-                        }
+                    toolbar {
+                        padding = insets(4)
+                        alignment = Pos.BASELINE_RIGHT
+                        hgrow = ALWAYS
+                        button("⊕▥") {
+                            action {
+                                fire(CommandTableAddField("Field", "value"))
+                            }
+                        } //▾↴⊖
+                        button("⊕▤") {
+                            action { dataState.addRecord() }
+                        } //▸↳⊖
+                        region { hgrow = ALWAYS }
+                        button("Close") { action { fire(CommandQuit) } }
                     }
                 }
                 hbox {
+                    style { alignment = Pos.BASELINE_RIGHT }
                     label {
                         subscribe<CommandStatusDisplay> { text = it.status }
                     }
                 }
             }
         }
-        widthProperty().addListener { _, _, new -> fire(CommandResize(new.toDouble())) }
     }
 
     init {
         subscribe<CommandQuit> { Platform.exit() }
+        subscribe<CommandAddSection> {
+            find<CategoryControlFragment>(mapOf(
+                    CategoryControlFragment::creation to true
+            )).openModal()
+        }
+        subscribe<CommandDeleteSection> {
+            find<CategoryControlFragment>(mapOf(
+                    CategoryControlFragment::creation to false
+            )).openModal()
+        }
         subscribe<CommandDebug> { println("Debug Message!") } // TODO: remove after tests are implemented
         runLater {
             fire(CommandTreePopulate(dataState.categories))

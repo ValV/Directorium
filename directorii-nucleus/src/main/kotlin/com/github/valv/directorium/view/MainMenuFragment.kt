@@ -13,14 +13,15 @@ class MainMenuFragment: Fragment() {
         }
         menu {
             text = "◩ Sections"
-            menuitem("Add to Category") { fire(CommandAddSection) }
-            menuitem("Delete selected") { fire(CommandDeleteSection) }
+            menuitem("⊕◩ Create Section") { fire(CommandAddSection) }
+            menuitem("⊖◩ Delete Section") { fire(CommandDeleteSection) }
         }
         menu {
             text = "▦ Data view"
-            menuitem("⊞↴ Add Field") { fire(CommandAddColumn) }
+            menuitem("⊞↴ Create Field") { fire(CommandAddColumn) }
             menuitem("⊟↴ Delete Field") { fire(CommandDeleteColumn) }
-            menuitem("⊞↳ Add Record") { fire(CommandAddColumn) }
+            separator()
+            menuitem("⊞↳ Create Record") { fire(CommandAddColumn) }
             menuitem("⊟↳ Delete Record") { fire(CommandDeleteColumn) }
         }
     }

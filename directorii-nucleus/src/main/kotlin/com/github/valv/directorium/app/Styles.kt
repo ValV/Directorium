@@ -14,6 +14,8 @@ class Styles : Stylesheet() {
 
     init {
         basis {
+            minWidth = 640.px
+            minHeight = 360.px
             prefWidth = 640.px
             prefHeight = 360.px
             padding = box(1.px)

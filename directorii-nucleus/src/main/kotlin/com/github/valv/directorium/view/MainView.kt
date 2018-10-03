@@ -8,8 +8,7 @@ import javafx.application.Platform
 import javafx.beans.property.*
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
-import javafx.geometry.Orientation.*
-import javafx.geometry.Pos
+import javafx.geometry.Pos.*
 import javafx.scene.control.*
 import javafx.scene.layout.Priority.*
 import javafx.util.converter.*
@@ -68,7 +67,7 @@ class MainView : View("Directorium") {
                     }
                     toolbar {
                         padding = insets(4)
-                        alignment = Pos.BASELINE_RIGHT
+                        alignment = BASELINE_RIGHT
                         hgrow = ALWAYS
                         button("⊕▥") {
                             action {
@@ -83,7 +82,7 @@ class MainView : View("Directorium") {
                     }
                 }
                 hbox {
-                    style { alignment = Pos.BASELINE_RIGHT }
+                    style { alignment = BASELINE_RIGHT }
                     label {
                         subscribe<CommandStatusDisplay> { text = it.status }
                     }
@@ -96,17 +95,26 @@ class MainView : View("Directorium") {
         subscribe<CommandQuit> { Platform.exit() }
         subscribe<CommandAddSection> {
             find<CategoryControlFragment>(mapOf(
+                    CategoryControlFragment::categories to dataState.categories,
                     CategoryControlFragment::creation to true
             )).openModal()
         }
         subscribe<CommandDeleteSection> {
             find<CategoryControlFragment>(mapOf(
+                    CategoryControlFragment::categories to dataState.categories,
                     CategoryControlFragment::creation to false
             )).openModal()
         }
         subscribe<CommandDebug> { println("Debug Message!") } // TODO: remove after tests are implemented
         runLater {
+
+            dataState.categories.putAll(mutableMapOf(
+                    "Books" to mutableListOf("Sci-fi").observable(),
+                    "Music" to mutableListOf("Ambient", "Industrial").observable()
+            ).observable())
             fire(CommandTreePopulate(dataState.categories))
+            fire(CommandTreeCreateSection("Books", "Academic"))
+            fire(CommandTreeCreateSection("Hooks", "Fishing"))
         }
     }
 }

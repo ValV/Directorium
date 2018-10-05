@@ -13,16 +13,16 @@ class MainMenuFragment: Fragment() {
         }
         menu {
             text = "◩ Sections"
-            menuitem("⊕◩ Create Section") { fire(CommandAddSection) }
-            menuitem("⊖◩ Delete Section") { fire(CommandDeleteSection) }
+            menuitem("◪✔ Create Section") { fire(CommandCreateSection) }
+            menuitem("◪✘ Delete Section") { fire(CommandDeleteSection) }
         }
         menu {
-            text = "▦ Data view"
-            menuitem("⊞↴ Create Field") { fire(CommandAddColumn) }
-            menuitem("⊟↴ Delete Field") { fire(CommandDeleteColumn) }
+            text = "▣ Data view" //▦
+            menuitem("◨✔ Create Field") { fire(CommandCreateField) } // TODO: remove ⊞↴
+            menuitem("◨✘ Delete Field") { fire(CommandDeleteField) } // TODO: remove ⊟↴
             separator()
-            menuitem("⊞↳ Create Record") { fire(CommandAddColumn) }
-            menuitem("⊟↳ Delete Record") { fire(CommandDeleteColumn) }
+            menuitem("⬓✔ Create Record") { fire(CommandCreateRecord) } // TODO: remove ⊞↳
+            menuitem("⬓✘ Delete Record") { fire(CommandDeleteRecord) } // TODO: remove ⊟↳
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.github.valv.directorium.control
 
+import com.github.valv.directorium.control.Events.*
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
@@ -32,8 +33,11 @@ class Data: Controller() {
     }
 
     init {
-        subscribe<Events.CommandLoadSection<Map<String, String>>> { println("Loaded: ${it.section}") }
-        subscribe<Events.CommandTreeCreateSection> { createSection(it.category, it.section) }
-        subscribe<Events.CommandTreeDeleteSection> { deleteSection(it.category, it.section) }
+        subscribe<Events.CommandDataViewLoadSection<Map<String, String>>> {
+            println("Loaded: ${it.section}") // FIXME: remove (debug)
+        }
+        subscribe<CommandTreeCreateSection> { createSection(it.category, it.section) }
+        subscribe<CommandTreeDeleteSection> { deleteSection(it.category, it.section) }
+        subscribe<CommandTableCreateField<Any>> { /* TODO */ }
     }
 }

@@ -13,8 +13,8 @@ import tornadofx.*
 
 class CategoryControlFragment: Fragment("Sections") {
     private val orientation: Orientation = HORIZONTAL
+    private val sections = mutableListOf<String>().observable()
     val categories: ObservableMap<String, ObservableList<String>>? by param()
-    val sections = mutableListOf<String>().observable()
     val creation: Boolean? by param()
     lateinit var category: ComboBox<String>
     lateinit var section: ComboBox<String>
@@ -24,7 +24,7 @@ class CategoryControlFragment: Fragment("Sections") {
                 category = combobox {
                     items = categories?.keys?.toList()?.observable() ?: listOf<String>().observable()
                     selectionModel.selectedItemProperty().addListener { _, _, v ->
-                        println("Debug (category selected): $v")
+                        println("Debug (fieldCombo selected): $v")
                         sections.setAll(
                                 if (categories?.contains(v) == true) categories?.get(v)
                                 else listOf()
@@ -56,8 +56,8 @@ class CategoryControlFragment: Fragment("Sections") {
             field {
                 if (creation != false) button("Create") {
                     action {
-                        if (category.value == null || category.value.isEmpty()) return@action
-                        if (section.value == null || category.value.isEmpty()) return@action
+                        if (category.value == null || category.value.isBlank()) return@action
+                        if (section.value == null || section.value.isBlank()) return@action
                         fire(Events.CommandTreeCreateSection(category.value, section.value))
                         close()
                     }

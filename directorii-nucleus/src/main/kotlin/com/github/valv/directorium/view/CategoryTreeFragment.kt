@@ -29,7 +29,7 @@ class CategoryTreeFragment: Fragment() {
             }
         }
         selectionModel.selectedItemProperty().addListener { _, _, item ->
-            if (item.isLeaf) fire(CommandLoadSection(mapOf(item.parent.value to item.value)))
+            if (item.isLeaf) fire(CommandDataViewLoadSection(mapOf(item.parent.value to item.value)))
         }
     }
 }

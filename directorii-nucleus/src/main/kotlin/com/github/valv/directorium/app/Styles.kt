@@ -55,6 +55,11 @@ class Styles : Stylesheet() {
                 minWidth = 120.px
                 maxWidth = 120.px
             }
+            textField {
+                //maxWidth = Double.MAX_VALUE.px
+                minWidth = 120.px
+                maxWidth = 120.px
+            }
             inputContainer {
                 minWidth = 200.px
                 borderColor += box(c("red"))

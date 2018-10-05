@@ -3,7 +3,6 @@ package com.github.valv.directorium.view
 import com.github.valv.directorium.control.Data
 import com.github.valv.directorium.app.Styles
 import com.github.valv.directorium.control.Events.*
-import com.github.valv.directorium.control.Data.*
 import javafx.application.Platform
 import javafx.beans.property.*
 import javafx.beans.value.ObservableValue
@@ -16,6 +15,7 @@ import tornadofx.*
 
 class MainView : View("Directorium") {
     val dataState: Data by inject()
+    lateinit var dataView: TableView<ObservableList<ObservableValue<Any>>>
 
     override val root = borderpane {
         addClass(Styles.basis)
@@ -30,22 +30,31 @@ class MainView : View("Directorium") {
             }
         }
         center {
-            tableview(dataState.records) {
+            dataView = tableview(dataState.records) {
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
                 isEditable = true
-                subscribe<CommandTableAddField<Any>> {
+                subscribe<CommandTableCreateField<Any>> {
                     // TODO: move to Controller
                     val item = it.item
                     this@tableview.items.forEach { it.add(SimpleObjectProperty(item)) }
                     column(it.name, SimpleObjectProperty::class) {
                         setCellValueFactory {
                             dataState.records[items.indexOf(it.value)][tableView.columns.indexOf(this)]
-                            as ObservableValue<SimpleObjectProperty<*>>
+                                    as ObservableValue<SimpleObjectProperty<*>>
                         }
-                        (this as TableColumn<ObservableList<*>, String?>).
-                                useTextField(DefaultStringConverter())
+                        when (item) {
+                            is String -> (this as TableColumn<ObservableList<*>, String?>)
+                                    .useTextField(DefaultStringConverter())
+                        }
                         dataState.fields.add(item)
                     }
+                }
+                subscribe<CommandTableDeleteField> {
+                    // TODO: move to Controller
+                    val number = columns.indexOf(it.name)
+                    columns.removeAt(number)
+                    dataState.fields.removeAt(number)
+                    dataState.records.forEach { it.removeAt(number) }
                 }
                 focusModel.focusedCellProperty().addListener { _, _, y ->
                     fire(CommandStatusDisplay("${y.row}:${y.column}"))
@@ -58,10 +67,10 @@ class MainView : View("Directorium") {
                     toolbar {
                         subscribe<CommandResize> { prefWidth = it.number / 4 }
                         padding = insets(4)
-                        button("⊕◩") {
-                            action { fire(CommandAddSection) }
+                        button("◪✔") {
+                            action { fire(CommandCreateSection) }
                         }
-                        button("⊖◩") {
+                        button("◪✘") {
                             action { fire(CommandDeleteSection) }
                         }
                     }
@@ -69,16 +78,18 @@ class MainView : View("Directorium") {
                         padding = insets(4)
                         alignment = BASELINE_RIGHT
                         hgrow = ALWAYS
-                        button("⊕▥") {
-                            action {
-                                fire(CommandTableAddField("Field", "value"))
-                            }
-                        } //▾↴⊖
-                        button("⊕▤") {
-                            action { dataState.addRecord() }
-                        } //▸↳⊖
+                        button("◨✔") {
+                            action { fire(CommandCreateField) }
+                        } //▥▾↴⊕⊖▣◨✔✘
+                        button("◨✘") { action { fire(CommandDeleteField) } }
                         region { hgrow = ALWAYS }
-                        button("Close") { action { fire(CommandQuit) } }
+                        button("⬓✔") {
+                            // TODO: move to Controller
+                            action { dataState.addRecord() }
+                        } //▤▸↳⊕⊖▣⬓✔✘
+                        button("⬓✘") { action { fire(CommandDeleteRecord) } }
+                        region { hgrow = ALWAYS }
+                        button("⏻") { action { fire(CommandQuit) } }
                     }
                 }
                 hbox {
@@ -93,7 +104,7 @@ class MainView : View("Directorium") {
 
     init {
         subscribe<CommandQuit> { Platform.exit() }
-        subscribe<CommandAddSection> {
+        subscribe<CommandCreateSection> {
             find<CategoryControlFragment>(mapOf(
                     CategoryControlFragment::categories to dataState.categories,
                     CategoryControlFragment::creation to true
@@ -105,9 +116,26 @@ class MainView : View("Directorium") {
                     CategoryControlFragment::creation to false
             )).openModal()
         }
-        subscribe<CommandDebug> { println("Debug Message!") } // TODO: remove after tests are implemented
+        subscribe<CommandCreateField> {
+            find<DataViewControlFragment>(mapOf(
+                    DataViewControlFragment::columnNames to dataView.columns,
+                    DataViewControlFragment::creation to true
+            )).openModal()
+        }
+        subscribe<CommandDeleteField> {
+            find<DataViewControlFragment>(mapOf(
+                    DataViewControlFragment::columnNames to dataView.columns,
+                    DataViewControlFragment::creation to false
+            )).openModal()
+        }
+        // FIXME: BEGIN: remove DEBUG events handling section
+        subscribe<CommandTableCreateField<Any>> {
+            println("Debug (CommandTableCreateField<Any>): ${it.name}, ${it.item}")
+        }
+        subscribe<CommandDebug> { println("Debug Message!") }
+        // FIXME: END: remove DEBUG events handling section
         runLater {
-
+            // TODO: move to Test unit
             dataState.categories.putAll(mutableMapOf(
                     "Books" to mutableListOf("Sci-fi").observable(),
                     "Music" to mutableListOf("Ambient", "Industrial").observable()

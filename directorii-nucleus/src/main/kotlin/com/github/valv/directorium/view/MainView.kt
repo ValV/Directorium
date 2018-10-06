@@ -4,14 +4,19 @@ import com.github.valv.directorium.control.Data
 import com.github.valv.directorium.app.Styles
 import com.github.valv.directorium.control.Events.*
 import javafx.application.Platform
-import javafx.beans.value.ObservableValue
-import javafx.collections.ObservableList
 import javafx.scene.control.*
 import tornadofx.*
 
 class MainView : View("Directorium") {
     private val dataState: Data by inject()
-    lateinit var dataView: TableView<ObservableList<ObservableValue<Any>>>
+    private val dataView = tableview(dataState.records) {
+        columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+        isEditable = true
+        subscribe<CommandTableUpdate> { it.update(this@tableview) }
+        focusModel.focusedCellProperty().addListener { _, _, y ->
+            fire(CommandStatusDisplay("${y.row}:${y.column}"))
+        }
+    }
 
     override val root = borderpane {
         addClass(Styles.basis)
@@ -26,14 +31,7 @@ class MainView : View("Directorium") {
             }
         }
         center {
-            dataView = tableview(dataState.records) {
-                columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
-                isEditable = true
-                subscribe<CommandTableUpdate> { it.update(this@tableview) }
-                focusModel.focusedCellProperty().addListener { _, _, y ->
-                    fire(CommandStatusDisplay("${y.row}:${y.column}"))
-                }
-            }
+            dataView
         }
         bottom {
             add(ToolPanelFragment::class)

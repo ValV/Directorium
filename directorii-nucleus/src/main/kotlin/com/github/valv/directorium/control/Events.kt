@@ -1,8 +1,10 @@
 package com.github.valv.directorium.control
 
+import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.collections.ObservableMap
 import javafx.scene.control.TableColumn
+import javafx.scene.control.TableView
 import tornadofx.*
 
 class Events {
@@ -30,6 +32,10 @@ class Events {
     class CommandTableCreateField<T>(val name: String, var item: T) : FXEvent()
 
     class CommandTableDeleteField(val name: TableColumn<*, *>?) : FXEvent()
+
+    class CommandTableUpdate(
+            val update: TableView<ObservableList<ObservableValue<Any>>>.() -> Unit
+    ) : FXEvent()
 
     object CommandCreateField : FXEvent()
     object CommandDeleteField : FXEvent()

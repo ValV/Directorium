@@ -4,17 +4,15 @@ import com.github.valv.directorium.control.Data
 import com.github.valv.directorium.app.Styles
 import com.github.valv.directorium.control.Events.*
 import javafx.application.Platform
-import javafx.beans.property.*
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.geometry.Pos.*
 import javafx.scene.control.*
 import javafx.scene.layout.Priority.*
-import javafx.util.converter.*
 import tornadofx.*
 
 class MainView : View("Directorium") {
-    val dataState: Data by inject()
+    private val dataState: Data by inject()
     lateinit var dataView: TableView<ObservableList<ObservableValue<Any>>>
 
     override val root = borderpane {
@@ -33,29 +31,7 @@ class MainView : View("Directorium") {
             dataView = tableview(dataState.records) {
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
                 isEditable = true
-                subscribe<CommandTableCreateField<Any>> {
-                    // TODO: move to Controller
-                    val item = it.item
-                    this@tableview.items.forEach { it.add(SimpleObjectProperty(item)) }
-                    column(it.name, SimpleObjectProperty::class) {
-                        setCellValueFactory {
-                            dataState.records[items.indexOf(it.value)][tableView.columns.indexOf(this)]
-                                    as ObservableValue<SimpleObjectProperty<*>>
-                        }
-                        when (item) {
-                            is String -> (this as TableColumn<ObservableList<*>, String?>)
-                                    .useTextField(DefaultStringConverter())
-                        }
-                        dataState.fields.add(item)
-                    }
-                }
-                subscribe<CommandTableDeleteField> {
-                    // TODO: move to Controller
-                    val number = columns.indexOf(it.name)
-                    columns.removeAt(number)
-                    dataState.fields.removeAt(number)
-                    dataState.records.forEach { it.removeAt(number) }
-                }
+                subscribe<CommandTableUpdate> { it.update(this@tableview) }
                 focusModel.focusedCellProperty().addListener { _, _, y ->
                     fire(CommandStatusDisplay("${y.row}:${y.column}"))
                 }
@@ -78,15 +54,10 @@ class MainView : View("Directorium") {
                         padding = insets(4)
                         alignment = BASELINE_RIGHT
                         hgrow = ALWAYS
-                        button("◨✔") {
-                            action { fire(CommandCreateField) }
-                        } //▥▾↴⊕⊖▣◨✔✘
+                        button("◨✔") { action { fire(CommandCreateField) } } //▥▾↴⊕⊖▣◨✔✘
                         button("◨✘") { action { fire(CommandDeleteField) } }
                         region { hgrow = ALWAYS }
-                        button("⬓✔") {
-                            // TODO: move to Controller
-                            action { dataState.addRecord() }
-                        } //▤▸↳⊕⊖▣⬓✔✘
+                        button("⬓✔") { action { fire(CommandCreateRecord) } } //▤▸↳⊕⊖▣⬓✔✘
                         button("⬓✘") { action { fire(CommandDeleteRecord) } }
                         region { hgrow = ALWAYS }
                         button("⏻") { action { fire(CommandQuit) } }
@@ -129,9 +100,6 @@ class MainView : View("Directorium") {
             )).openModal()
         }
         // FIXME: BEGIN: remove DEBUG events handling section
-        subscribe<CommandTableCreateField<Any>> {
-            println("Debug (CommandTableCreateField<Any>): ${it.name}, ${it.item}")
-        }
         subscribe<CommandDebug> { println("Debug Message!") }
         // FIXME: END: remove DEBUG events handling section
         runLater {

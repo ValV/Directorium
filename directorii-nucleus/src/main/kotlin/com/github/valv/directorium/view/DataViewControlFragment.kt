@@ -67,7 +67,7 @@ class DataViewControlFragment : Fragment("Fields") {
                         ColumnTypes.DOUBLE -> 0.0
                         ColumnTypes.BOOLEAN -> false
                         ColumnTypes.DATE -> Date.from(Instant.now())
-                        ColumnTypes.LIST -> listOf<String>().observable()
+                        ColumnTypes.LIST -> listOf<String>()
                         else -> ""
                     }
             ))

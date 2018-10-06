@@ -5,7 +5,11 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.scene.control.TableColumn
+import javafx.util.converter.DateStringConverter
 import javafx.util.converter.DefaultStringConverter
+import javafx.util.converter.DoubleStringConverter
+import javafx.util.converter.IntegerStringConverter
+import java.util.Date
 import tornadofx.*
 
 class Data : Controller() {
@@ -39,6 +43,16 @@ class Data : Controller() {
                 when (item) {
                     is String -> (this as TableColumn<ObservableList<*>, String?>)
                             .useTextField(DefaultStringConverter())
+                    is Int -> (this as TableColumn<ObservableList<*>, Int?>)
+                            .useTextField(IntegerStringConverter())
+                    is Double -> (this as TableColumn<ObservableList<*>, Double?>)
+                            .useTextField(DoubleStringConverter())
+                    is Boolean -> (this as TableColumn<ObservableList<*>, Boolean?>)
+                            .useCheckbox()
+                    is Date -> (this as TableColumn<ObservableList<*>, Date?>)
+                            .useTextField(DateStringConverter())
+                    is List<*> -> (this as TableColumn<ObservableList<*>, String?>)
+                            .useComboBox(listOf("One", "Two").observable())
                 }
                 fieldValues.add(item)
             }

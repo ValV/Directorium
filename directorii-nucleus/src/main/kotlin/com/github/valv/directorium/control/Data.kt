@@ -1,16 +1,15 @@
 package com.github.valv.directorium.control
 
+import com.github.valv.components.useDateField
+import com.github.valv.components.useDoubleField
+import com.github.valv.components.useIntegerField
 import com.github.valv.directorium.control.Events.*
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.scene.control.TableColumn
-import javafx.util.converter.DateStringConverter
-import javafx.util.converter.DefaultStringConverter
-import javafx.util.converter.DoubleStringConverter
-import javafx.util.converter.IntegerStringConverter
-import java.util.Date
 import tornadofx.*
+import java.util.*
 
 class Data : Controller() {
     private val fieldValues = mutableListOf<Any>()
@@ -42,15 +41,15 @@ class Data : Controller() {
                 }
                 when (item) {
                     is String -> (this as TableColumn<ObservableList<*>, String?>)
-                            .useTextField(DefaultStringConverter())
+                            .useTextField()
                     is Int -> (this as TableColumn<ObservableList<*>, Int?>)
-                            .useTextField(IntegerStringConverter())
+                            .useIntegerField()
                     is Double -> (this as TableColumn<ObservableList<*>, Double?>)
-                            .useTextField(DoubleStringConverter())
+                            .useDoubleField()
                     is Boolean -> (this as TableColumn<ObservableList<*>, Boolean?>)
                             .useCheckbox()
                     is Date -> (this as TableColumn<ObservableList<*>, Date?>)
-                            .useTextField(DateStringConverter())
+                            .useDateField()
                     is List<*> -> (this as TableColumn<ObservableList<*>, String?>)
                             .useComboBox(listOf("One", "Two").observable())
                 }
@@ -102,5 +101,6 @@ class Data : Controller() {
         subscribe<CommandCreateRecord> { createRecord() }
         subscribe<CommandDeleteRecord> { deleteRecord() }
 
+        OnErrorAction.SKIP
     }
 }

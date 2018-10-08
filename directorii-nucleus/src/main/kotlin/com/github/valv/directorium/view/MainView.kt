@@ -14,7 +14,7 @@ class MainView : View("Directorium") {
     lateinit var dataView: TableView<ObservableList<ObservableValue<Any>>>
 
     override val root = borderpane {
-        addClass(Styles.basis)
+        addClass(Styles.grounding)
         widthProperty().addListener { _, _, new -> fire(CommandResize(new.toDouble())) }
         top {
             add(MainMenuFragment::class)

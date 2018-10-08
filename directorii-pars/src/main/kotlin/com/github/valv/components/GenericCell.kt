@@ -22,17 +22,13 @@ class GenericCell<S, T>(converter: StringConverter<T>?, formatter: TextFormatter
     private var editor = TextField(getItemText()).apply {
         textFormatter = formatter
         setOnAction { event ->
-            if (this@GenericCell.converter == null) {
-                throw IllegalStateException("Attempting to convert text input into Object, but provided StringConverter is null. Be sure to set a StringConverter in your cell factory.")
-            } else {
-                try {
-                    commitEdit(this@GenericCell.converter.fromString(text))
-                } catch (e: RuntimeException) {
-                    println(e.message) // FIXME: fromString conversion stub
-                    commitEdit(this@GenericCell.item)
-                }
-                event.consume()
+            try {
+                commitEdit(this@GenericCell.converter.fromString(text))
+            } catch (e: RuntimeException) {
+                println(e.message) // FIXME: fromString conversion stub
+                commitEdit(this@GenericCell.item)
             }
+            event.consume()
         }
         setOnKeyReleased { t ->
             if (t.code == KeyCode.ESCAPE) {

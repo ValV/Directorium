@@ -66,18 +66,7 @@ class MainView : View("Directorium") {
                     DataViewControlFragment::creation to false
             )).openModal()
         }
-        // FIXME: BEGIN: remove DEBUG events handling section
+        // FIXME: remove DEBUG events handling
         subscribe<CommandDebug> { println("Debug Message!") }
-        // FIXME: END: remove DEBUG events handling section
-        runLater {
-            // TODO: move to Test unit
-            dataState.categories.putAll(mutableMapOf(
-                    "Books" to mutableListOf("Sci-fi").observable(),
-                    "Music" to mutableListOf("Ambient", "Industrial").observable()
-            ).observable())
-            fire(CommandTreePopulate(dataState.categories))
-            fire(CommandTreeCreateSection("Books", "Academic"))
-            fire(CommandTreeCreateSection("Hooks", "Fishing"))
-        }
     }
 }

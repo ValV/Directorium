@@ -15,9 +15,22 @@ class DirectoriumTest : App(MainView::class, Styles::class) {
                     "Books" to mutableListOf("Sci-fi").observable(),
                     "Music" to mutableListOf("Ambient", "Industrial").observable()
             ).observable())
+
+            // Populate TreeView with predefined data
             fire(CommandTreePopulate(dataState.categories))
+
+            // Add categories and sections separately
             fire(CommandTreeCreateSection("Books", "Academic"))
-            fire(CommandTreeCreateSection("Hooks", "Fishing"))
+            fire(CommandTreeCreateSection("Films", "Sci-fi"))
+
+            // Add columns
+            fire(CommandTableCreateField("String", "EMPTY"))
+            fire(CommandTableCreateField("Integer", 0))
+            fire(CommandTableCreateField("Double", 0.0))
+            fire(CommandTableCreateField("Boolean", true))
+
+            // Add rows
+            fire(CommandCreateRecord)
         }
     }
 }

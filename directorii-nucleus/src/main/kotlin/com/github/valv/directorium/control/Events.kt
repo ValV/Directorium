@@ -5,6 +5,7 @@ import javafx.collections.ObservableList
 import javafx.collections.ObservableMap
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
+import javafx.scene.control.TreeView
 import tornadofx.*
 
 class Events {
@@ -22,8 +23,9 @@ class Events {
 
     class CommandTreeCreateSection(val category: String, val section: String) : FXEvent()
     class CommandTreeDeleteSection(val category: String, val section: String) : FXEvent()
+    class CommandTreeLoadSection(val save: String, val load: String) : FXEvent()
 
-    class CommandDataViewLoadSection<T>(val section: T) : FXEvent()
+    class CommandTreeUpdate(val update: TreeView<String>.() -> Unit) : FXEvent()
 
     object CommandCreateSection : FXEvent()
     object CommandDeleteSection : FXEvent()

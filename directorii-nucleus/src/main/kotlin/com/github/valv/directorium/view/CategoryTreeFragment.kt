@@ -5,7 +5,7 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.Priority.*
 import tornadofx.*
 
-class CategoryTreeFragment: Fragment() {
+class CategoryTreeFragment : Fragment() {
     override val root = treeview<Any> {
         root = TreeItem()
         isShowRoot = false
@@ -28,8 +28,14 @@ class CategoryTreeFragment: Fragment() {
                 }
             }
         }
-        selectionModel.selectedItemProperty().addListener { _, _, item ->
-            if (item.isLeaf) fire(CommandDataViewLoadSection(mapOf(item.parent.value to item.value)))
+        selectionModel.selectedItemProperty().addListener { _, save, load ->
+            if (load?.isLeaf == true) {
+                val savePath = if (save?.parent?.value != null)
+                    "${save.parent.value}/${save.value}" else ""
+                val loadPath = if (load.parent?.value != null)
+                    "${load.parent.value}/${load.value}" else ""
+                fire(CommandTreeLoadSection(savePath, loadPath))
+            }
         }
     }
 }

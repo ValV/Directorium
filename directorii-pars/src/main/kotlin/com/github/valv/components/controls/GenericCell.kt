@@ -1,4 +1,4 @@
-package com.github.valv.components
+package com.github.valv.components.controls
 
 import java.lang.NumberFormatException
 import java.lang.RuntimeException

@@ -21,11 +21,28 @@
     </modules>
 
     <properties>
-        <kotlin.version>1.2.21</kotlin.version>
-        <tornadofx.version>1.7.14</tornadofx.version>
+        <kotlin.version>1.2.71</kotlin.version>
+        <tornadofx.version>1.7.17</tornadofx.version>
+        <serialization.version>0.6.2</serialization.version>
         <directorii.nucleus.version>1.0</directorii.nucleus.version>
         <directorii.pars.version>1.0</directorii.pars.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>bintray-kotlin-kotlinx</id>
+            <name>bintray</name>
+            <url>http://kotlin.bintray.com/kotlinx</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>bintray-kotlin-kotlinx</id>
+            <name>bintray-plugin</name>
+            <url>http://kotlin.bintray.com/kotlinx</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
         <dependency>
@@ -44,6 +61,16 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-reflect</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-serialization-runtime</artifactId>
+            <version>${serialization.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -60,7 +87,7 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                        <jvmTarget>1.8</jvmTarget>
+                            <jvmTarget>1.8</jvmTarget>
                         </configuration>
                     </execution>
                     <execution>
@@ -71,6 +98,18 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <compilerPlugins>
+                        <plugin>kotlinx-serialization</plugin>
+                    </compilerPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlinx</groupId>
+                        <artifactId>kotlinx-maven-serialization-plugin</artifactId>
+                        <version>${serialization.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

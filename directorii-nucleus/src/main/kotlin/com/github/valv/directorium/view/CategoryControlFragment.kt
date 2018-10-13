@@ -1,6 +1,5 @@
 package com.github.valv.directorium.view
 
-import com.github.valv.directorium.app.Styles
 import com.github.valv.directorium.control.Events
 import javafx.beans.InvalidationListener
 import javafx.collections.ObservableList
@@ -11,7 +10,7 @@ import javafx.scene.layout.Priority.*
 import javafx.scene.control.ComboBox
 import tornadofx.*
 
-class CategoryControlFragment: Fragment("Sections") {
+class CategoryControlFragment : Fragment("Sections") {
     private val orientation: Orientation = HORIZONTAL
     private val sections = mutableListOf<String>().observable()
     val categories: ObservableMap<String, ObservableList<String>>? by param()
@@ -22,7 +21,8 @@ class CategoryControlFragment: Fragment("Sections") {
         fieldset(labelPosition = orientation) {
             field("Category") {
                 category = combobox {
-                    items = categories?.keys?.toList()?.observable() ?: listOf<String>().observable()
+                    items = categories?.keys?.toList()?.observable()
+                            ?: listOf<String>().observable()
                     selectionModel.selectedItemProperty().addListener { _, _, v ->
                         println("Debug (fieldCombo selected): $v")
                         sections.setAll(
@@ -62,9 +62,11 @@ class CategoryControlFragment: Fragment("Sections") {
                         close()
                     }
                 }
-                else button ("Delete") {
+                else button("Delete") {
                     action {
-                        fire(Events.CommandTreeDeleteSection(category.value, section.value ?: ""))
+                        fire(Events.CommandTreeDeleteSection(
+                                category.value, section.value ?: ""
+                        ))
                         close()
                     }
                 }
@@ -74,9 +76,5 @@ class CategoryControlFragment: Fragment("Sections") {
                 }
             }
         }
-    }
-
-    init {
-        importStylesheet(Styles::class)
     }
 }

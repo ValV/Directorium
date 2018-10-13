@@ -3,10 +3,8 @@ package com.github.valv.directorium.view
 import com.github.valv.directorium.control.Data
 import com.github.valv.directorium.app.Styles
 import com.github.valv.directorium.control.Events.*
-import com.sun.javafx.scene.control.skin.TableHeaderRow
 import com.sun.javafx.scene.control.skin.TableViewSkinBase
 import javafx.application.Platform
-import javafx.beans.InvalidationListener
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.scene.control.*

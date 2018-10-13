@@ -4,25 +4,23 @@ import com.github.valv.components.controls.useDateField
 import com.github.valv.components.controls.useDoubleField
 import com.github.valv.components.controls.useIntegerField
 import com.github.valv.directorium.control.Events.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.util.*
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.scene.control.TableColumn
+import kotlin.RuntimeException
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringSerializer
 import kotlinx.serialization.json.JSON
 import tornadofx.*
-import java.io.File
-import java.io.FileNotFoundException
-import java.lang.IllegalArgumentException
-import java.lang.RuntimeException
-import java.util.*
 
 class Data : Controller() {
     @Serializable
     data class Field(val name: String, val value: Any)
 
-    //private val fieldValues = mutableListOf<Any>()
     val fields = mutableListOf<Field>()
     val records = mutableListOf<ObservableList<ObservableValue<Any>>>().observable()
     val categories = mutableMapOf<String, ObservableList<String>>().observable()
@@ -33,16 +31,12 @@ class Data : Controller() {
     fun saveIndex() {
         val index = categories.mapValues { it.value.toList() }
         val sIndex = JSON.stringify(serialCategories, index)
-        println(sIndex) // FIXME: remove (debug)
         try {
             File("data").mkdirs()
             File("data/index.json").writeText(sIndex)
-        } catch (e: FileNotFoundException) {
-            println("Index save: ${e.message}")
-        } catch (e: IllegalArgumentException) {
-            println("Write: ${e.message}") // TODO: handle more exceptions
+        } catch (e: RuntimeException) {
+            println("Index save exception:\n${e.message}\n")
         }
-        //println(JSON.parse(serialCategories, sIndex)) // FIXME: remove (debug)
     }
 
     fun loadIndex() {
@@ -51,10 +45,8 @@ class Data : Controller() {
             val index = JSON.parse(serialCategories, sIndex)
             categories.putAll(index.mapValues { it.value.observable() }.observable())
             fire(CommandTreePopulate(categories))
-        } catch (e: FileNotFoundException) {
-            println("Index load: ${e.message}")
-        } catch (e: IllegalArgumentException) {
-            println("Read: ${e.message}") // TODO: handle more exceptions
+        } catch (e: RuntimeException) {
+            println("Index load exception:\n${e.message}\n")
         }
     }
 
@@ -65,7 +57,7 @@ class Data : Controller() {
                 File("data/$path").deleteRecursively()
                 return
             } catch (e: RuntimeException) {
-                println(e.message)
+                println("Data save exception:\n${e.message}\n")
             }
             return
         }
@@ -80,7 +72,6 @@ class Data : Controller() {
                         is Double -> v.toString()
                         is Boolean -> v.toString()
                         is Date -> v.toString()
-                        //is List<*> -> v.joinToString { it.toString() }
                         else -> ""
                     }
                 }.toList()
@@ -89,15 +80,8 @@ class Data : Controller() {
             val sRecords = JSON.stringify(serialRecords, list)
             File("data/$path/fields.json").writeText(sFields)
             File("data/$path/records.json").writeText(sRecords)
-            //println("JSON:")
-            //println(sFields) // FIXME: remove (debug)
-            //println(sRecords) // FIXME: remove (debug)
-        } catch (e: FileNotFoundException) {
-            println("Data save: ${e.message}")
-        } catch (e: IllegalArgumentException) {
-            println("Write: ${e.message}") // TODO: handle more exceptions
         } catch (e: RuntimeException) {
-            println(e.message)
+            println("Data save exception:\n${e.message}\n")
         }
     }
 
@@ -108,23 +92,15 @@ class Data : Controller() {
         if (path.isEmpty()) return
         try {
             val sFields = File("data/$path/fields.json").readText()
-            //println("JSON:")
-            //println(sFields) // FIXME: remove (debug)
-            (JSON.parse(serialFields, sFields)).forEach {
-                //println("Creating: $it")
-                createField(it.name, it.value)
-            }
+            (JSON.parse(serialFields, sFields)).forEach { createField(it.name, it.value) }
         } catch (e: FileNotFoundException) {
-            println("Data load: ${e.message}")
             return
-        } catch (e: IllegalArgumentException) {
-            println("Read: ${e.message}") // TODO: handle more exceptions
+        } catch (e: RuntimeException) {
+            println("Data load exception:\n${e.message}\n")
             return
         }
         try {
             val sRecords = File("data/$path/records.json").readText()
-            //println("JSON:")
-            //println(sRecords) // FIXME: remove (debug)
             val list = JSON.parse(serialRecords, sRecords)
             val data: ObservableList<ObservableList<ObservableValue<Any>>> =
                     list.map {
@@ -139,14 +115,9 @@ class Data : Controller() {
                         }.observable()
                     }.observable()
             records.addAll(data)
-            //println("DATA:")
-            //println(records) // FIXME: remove (debug)
         } catch (e: FileNotFoundException) {
-            println("Data load: ${e.message}")
-        } catch (e: IllegalArgumentException) {
-            println("Read: ${e.message}") // TODO: handle more exceptions
         } catch (e: RuntimeException) {
-            println(e.message) // TODO: handle exceptions
+            println("Data load exception:\n${e.message}\n")
             records.clear()
         }
     }
@@ -165,7 +136,7 @@ class Data : Controller() {
             try {
                 File("data/$category").deleteRecursively()
             } catch (e: RuntimeException) {
-                println("Delete category: ${e.message}")
+                println("Category delete exception:\n${e.message}\n")
             }
             saveIndex()
         } else {
@@ -173,7 +144,7 @@ class Data : Controller() {
             try {
                 File("data/$category/$section").deleteRecursively()
             } catch (e: RuntimeException) {
-                println("Delete category: ${e.message}")
+                println("Category delete exception:\n${e.message}\n")
             }
             saveIndex()
         }
@@ -201,8 +172,7 @@ class Data : Controller() {
                     is List<*> -> (this as TableColumn<ObservableList<*>, String?>)
                             .useComboBox(listOf("One", "Two").observable())
                 }
-                //fieldValues.add(item)
-                fields.add(Field(name, item)) // TODO: switch to structure
+                fields.add(Field(name, item))
             }
         })
     }
@@ -212,9 +182,7 @@ class Data : Controller() {
             val number = columns.indexOf(column)
             if (number > -1) {
                 columns.removeAt(number)
-                //fieldValues.removeAt(number)
-                fields.removeAt(number) // TODO: switch to structure
-                //println("Debug (deleteField): columns = ${columns.count()}")
+                fields.removeAt(number)
                 if (columns.count() > 0) records.forEach { it.removeAt(number) }
                 else records.clear()
             }
@@ -226,7 +194,6 @@ class Data : Controller() {
             if (columns.count() > 0) {
                 val list = mutableListOf<ObservableValue<Any>>().observable()
                 val current = selectionModel.selectedIndex
-                //fieldValues.forEach { list.add(SimpleObjectProperty(it)) }
                 fields.forEach { list.add(SimpleObjectProperty(it.value)) }
                 records.add(current + 1, list)
             }
@@ -243,7 +210,6 @@ class Data : Controller() {
 
     init {
         subscribe<Events.CommandTreeLoadSection> {
-            //println("Save: ${it.save}\nLoad: ${it.load}") // FIXME: remove (debug)
             saveData(it.save)
             loadData(it.load)
         }

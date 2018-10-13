@@ -72,7 +72,7 @@ class DataViewControlFragment : Fragment("Fields") {
                     }
             ))
             close()
-        } else { // FIXME: status bar
+        } else {
             fire(CommandStatusDisplay("Can't create unique column name"))
         }
     }
@@ -82,9 +82,5 @@ class DataViewControlFragment : Fragment("Fields") {
                 columnNames?.getOrNull(fieldCombo.selectionModel.selectedIndex)
         ))
         close()
-    }
-
-    init {
-        importStylesheet(Styles::class)
     }
 }

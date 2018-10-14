@@ -115,6 +115,7 @@ class Data : Controller() {
                         }.observable()
                     }.observable()
             records.addAll(data)
+            fire(CommandTableResize)
         } catch (e: FileNotFoundException) {
         } catch (e: RuntimeException) {
             println("Data load exception:\n${e.message}\n")
@@ -159,18 +160,36 @@ class Data : Controller() {
                             as ObservableValue<SimpleObjectProperty<*>>
                 }
                 when (item) {
-                    is String -> (this as TableColumn<ObservableList<*>, String?>)
-                            .useTextField()
-                    is Int -> (this as TableColumn<ObservableList<*>, Int?>)
-                            .useIntegerField()
-                    is Double -> (this as TableColumn<ObservableList<*>, Double?>)
-                            .useDoubleField()
-                    is Boolean -> (this as TableColumn<ObservableList<*>, Boolean?>)
-                            .useCheckbox()
-                    is Date -> (this as TableColumn<ObservableList<*>, Date?>)
-                            .useDateField()
-                    is List<*> -> (this as TableColumn<ObservableList<*>, String?>)
-                            .useComboBox(listOf("One", "Two").observable())
+                    is String -> {
+                        (this as TableColumn<ObservableList<*>, String?>).useTextField() {
+                            requestResize()
+                        }
+                        remainingWidth()
+                    }
+                    is Int -> {
+                        (this as TableColumn<ObservableList<*>, Int?>).useIntegerField() {
+                            requestResize()
+                        }
+                        contentWidth(padding = 2.0)
+                    }
+                    is Double -> {
+                        (this as TableColumn<ObservableList<*>, Double?>).useDoubleField() {
+                            requestResize()
+                        }
+                        contentWidth(padding = 2.0)
+                    }
+                    is Boolean -> {
+                        (this as TableColumn<ObservableList<*>, Boolean?>).useCheckbox()
+                        contentWidth(padding = 2.0)
+                    }
+                    is Date -> {
+                        (this as TableColumn<ObservableList<*>, Date?>).useDateField()
+                        contentWidth(padding = 2.0)
+                    }
+                    is List<*> -> {
+                        (this as TableColumn<ObservableList<*>, String?>).useComboBox(listOf("One", "Two").observable())
+                        contentWidth(padding = 2.0)
+                    }
                 }
                 fields.add(Field(name, item))
             }
@@ -217,8 +236,8 @@ class Data : Controller() {
         subscribe<CommandTreeDeleteSection> { deleteSection(it.category, it.section) }
         subscribe<CommandTableCreateField<Any>> { createField(it.name, it.item) }
         subscribe<CommandTableDeleteField> { deleteField(it.name) }
-        subscribe<CommandCreateRecord> { createRecord() }
-        subscribe<CommandDeleteRecord> { deleteRecord() }
+        subscribe<CommandCreateRecord> { createRecord(); fire(CommandTableResize) }
+        subscribe<CommandDeleteRecord> { deleteRecord(); fire(CommandTableResize) }
 
         OnErrorAction.SKIP
     }

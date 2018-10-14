@@ -8,6 +8,7 @@ class Styles : Stylesheet() {
     val highlight = false
 
     companion object {
+        val a4 by cssclass()
         val heading by cssclass()
         val grounding by cssclass()
     }
@@ -17,7 +18,7 @@ class Styles : Stylesheet() {
             s(label, fieldset) {
                 borderColor += box(c("blue"))
             }
-            s(menuBar, toolBar, inputContainer) {
+            s(menuBar, toolBar, inputContainer, a4) {
                 borderColor += box(c("red"))
             }
             s(tableView, treeView, field) {
@@ -40,6 +41,10 @@ class Styles : Stylesheet() {
             padding = box(0.px, 8.px)
             fontSize = 16.px
             fontWeight = FontWeight.BOLD
+        }
+        a4 {
+            prefWidth = 210.mm
+            prefHeight = 297.mm
         }
         s(tableView, treeView) {
             borderInsets += box(1.px)

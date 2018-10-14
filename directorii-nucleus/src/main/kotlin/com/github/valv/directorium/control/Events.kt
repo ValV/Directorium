@@ -39,6 +39,7 @@ class Events {
             val update: TableView<ObservableList<ObservableValue<Any>>>.() -> Unit
     ) : FXEvent()
 
+    object CommandTableResize : FXEvent()
     object CommandCreateField : FXEvent()
     object CommandDeleteField : FXEvent()
     object CommandCreateRecord : FXEvent()

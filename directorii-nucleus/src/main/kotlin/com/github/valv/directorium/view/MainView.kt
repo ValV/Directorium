@@ -12,7 +12,7 @@ import tornadofx.*
 
 class MainView : View("Directorium") {
     private val dataState: Data by inject()
-    private val categoryView = tornadofx.find(CategoryTreeFragment::class)
+    private val categoryView = find(CategoryTreeFragment::class)
     lateinit var dataView: TableView<ObservableList<ObservableValue<Any>>>
 
     override val root = borderpane {
@@ -29,7 +29,6 @@ class MainView : View("Directorium") {
         }
         center {
             dataView = tableview(dataState.records) {
-                columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
                 skinProperty().addListener { _, _, skin ->
                     val s =
                             (skin as TableViewSkinBase<*, *, *, *, *, *>).getTableHeaderRow()
@@ -40,6 +39,8 @@ class MainView : View("Directorium") {
                 focusModel.focusedCellProperty().addListener { _, _, y ->
                     fire(CommandStatusDisplay("${y.row}:${y.column}"))
                 }
+                smartResize()
+                subscribe<CommandTableResize> { this@tableview.requestResize() }
             }
         }
         bottom {
@@ -79,6 +80,12 @@ class MainView : View("Directorium") {
                     DataViewControlFragment::columnNames to dataView.columns,
                     DataViewControlFragment::creation to false
             )).openModal()
+        }
+        subscribe<CommandPrint> {
+            find<DataPrintFragment>(mapOf(
+                    DataPrintFragment::source to dataView
+            )).openModal()
+            println("Opened modal!") // FIXME: remove (debug)
         }
         // FIXME: remove DEBUG events handling
         subscribe<CommandDebug> { println("Debug Message!") }

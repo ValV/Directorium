@@ -1,30 +1,30 @@
 package com.github.valv.directorium.view
 
-import com.github.valv.directorium.control.Events
+import com.github.valv.directorium.control.Events.*
 import javafx.beans.InvalidationListener
 import javafx.collections.ObservableList
 import javafx.collections.ObservableMap
-import javafx.geometry.Orientation
-import javafx.geometry.Orientation.*
-import javafx.scene.layout.Priority.*
+import javafx.geometry.Orientation.HORIZONTAL
 import javafx.scene.control.ComboBox
+import javafx.scene.layout.Priority.ALWAYS
 import tornadofx.*
 
 class CategoryControlFragment : Fragment("Sections") {
-    private val orientation: Orientation = HORIZONTAL
     private val sections = mutableListOf<String>().observable()
+
     val categories: ObservableMap<String, ObservableList<String>>? by param()
     val creation: Boolean? by param()
+
     lateinit var category: ComboBox<String>
     lateinit var section: ComboBox<String>
+
     override val root = form {
-        fieldset(labelPosition = orientation) {
+        fieldset(labelPosition = HORIZONTAL) {
             field("Category") {
                 category = combobox {
                     items = categories?.keys?.toList()?.observable()
                             ?: listOf<String>().observable()
                     selectionModel.selectedItemProperty().addListener { _, _, v ->
-                        println("Debug (fieldCombo selected): $v")
                         sections.setAll(
                                 if (categories?.contains(v) == true) categories?.get(v)
                                 else listOf()
@@ -58,13 +58,13 @@ class CategoryControlFragment : Fragment("Sections") {
                     action {
                         if (category.value == null || category.value.isBlank()) return@action
                         if (section.value == null || section.value.isBlank()) return@action
-                        fire(Events.CommandTreeCreateSection(category.value, section.value))
+                        fire(CommandTreeCreateSection(category.value, section.value))
                         close()
                     }
                 }
                 else button("Delete") {
                     action {
-                        fire(Events.CommandTreeDeleteSection(
+                        fire(CommandTreeDeleteSection(
                                 category.value, section.value ?: ""
                         ))
                         close()

@@ -4,8 +4,11 @@ import com.github.valv.directorium.control.Data
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
-import javafx.geometry.Pos.*
-import javafx.print.*
+import javafx.geometry.Pos.TOP_CENTER
+import javafx.print.PageOrientation
+import javafx.print.Paper
+import javafx.print.Printer
+import javafx.print.PrinterJob
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority.*

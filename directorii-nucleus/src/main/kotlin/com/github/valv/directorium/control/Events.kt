@@ -1,11 +1,9 @@
 package com.github.valv.directorium.control
 
-import javafx.beans.value.ObservableValue
+import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
-import javafx.collections.ObservableMap
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
-import javafx.scene.control.TreeView
 import tornadofx.*
 
 class Events {
@@ -16,16 +14,13 @@ class Events {
 
     object CommandPrint : FXEvent()
     object CommandQuit : FXEvent()
-    object CommandDebug : FXEvent() // TODO: remove after GUI is stable
 
     // TreeView events
-    class CommandTreePopulate<S, T>(val categories: ObservableMap<S, ObservableList<T>>) : FXEvent()
+    class CommandTreePopulate<S, T>(val categories: MutableMap<S, ObservableList<T>>) : FXEvent()
 
     class CommandTreeCreateSection(val category: String, val section: String) : FXEvent()
     class CommandTreeDeleteSection(val category: String, val section: String) : FXEvent()
     class CommandTreeLoadSection(val save: String, val load: String) : FXEvent()
-
-    class CommandTreeUpdate(val update: TreeView<String>.() -> Unit) : FXEvent()
 
     object CommandCreateSection : FXEvent()
     object CommandDeleteSection : FXEvent()
@@ -36,10 +31,11 @@ class Events {
     class CommandTableDeleteField(val name: TableColumn<*, *>?) : FXEvent()
 
     class CommandTableUpdate(
-            val update: TableView<ObservableList<ObservableValue<Any>>>.() -> Unit
+            val update: TableView<MutableList<ObjectProperty<Any>>>.() -> Unit
     ) : FXEvent()
 
     object CommandTableResize : FXEvent()
+
     object CommandCreateField : FXEvent()
     object CommandDeleteField : FXEvent()
     object CommandCreateRecord : FXEvent()

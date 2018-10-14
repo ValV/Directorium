@@ -1,19 +1,18 @@
 package com.github.valv.directorium.view
 
-import com.github.valv.directorium.control.Data
 import com.github.valv.directorium.app.Styles
+import com.github.valv.directorium.control.Data
 import com.github.valv.directorium.control.Events.*
 import com.sun.javafx.scene.control.skin.TableViewSkinBase
 import javafx.application.Platform
-import javafx.beans.value.ObservableValue
-import javafx.collections.ObservableList
-import javafx.scene.control.*
+import javafx.beans.property.ObjectProperty
+import javafx.scene.control.TableView
 import tornadofx.*
 
 class MainView : View("Directorium") {
     private val dataState: Data by inject()
     private val categoryView = find(CategoryTreeFragment::class)
-    lateinit var dataView: TableView<ObservableList<ObservableValue<Any>>>
+    private lateinit var dataView: TableView<MutableList<ObjectProperty<Any>>>
 
     override val root = borderpane {
         addClass(Styles.grounding)
@@ -86,10 +85,9 @@ class MainView : View("Directorium") {
                     DataPrintFragment::source to dataView
             )).openModal()
         }
-        // FIXME: remove DEBUG events handling
-        subscribe<CommandDebug> { println("Debug Message!") }
         runLater {
             dataState.loadIndex()
+            root.requestFocus()
         }
     }
 }

@@ -1,8 +1,8 @@
 package com.github.valv.directorium.view
 
 import com.github.valv.directorium.control.Events.*
-import javafx.geometry.Pos.*
-import javafx.scene.layout.Priority.*
+import javafx.geometry.Pos.BASELINE_RIGHT
+import javafx.scene.layout.Priority.ALWAYS
 import tornadofx.*
 
 class ToolPanelFragment : Fragment() {

@@ -2,7 +2,7 @@ package com.github.valv.directorium.view
 
 import com.github.valv.directorium.control.Events.*
 import javafx.scene.control.TreeItem
-import javafx.scene.layout.Priority.*
+import javafx.scene.layout.Priority.ALWAYS
 import tornadofx.*
 
 class CategoryTreeFragment : Fragment() {

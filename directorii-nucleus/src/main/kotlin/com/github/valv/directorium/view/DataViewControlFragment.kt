@@ -1,19 +1,18 @@
 package com.github.valv.directorium.view
 
-import com.github.valv.directorium.app.Styles
 import com.github.valv.directorium.control.Events.*
-import javafx.geometry.Orientation.*
+import javafx.geometry.Orientation.HORIZONTAL
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TextField
-import javafx.scene.layout.Priority.*
+import javafx.scene.layout.Priority.ALWAYS
 import tornadofx.*
 import java.time.Instant
 import java.util.*
 
 class DataViewControlFragment : Fragment("Fields") {
     private enum class ColumnTypes {
-        STRING, INTEGER, DOUBLE, BOOLEAN, DATE, LIST;
+        STRING, INTEGER, DOUBLE, BOOLEAN, DATE;
 
         override fun toString(): String {
             return this.name.toLowerCase().capitalize()
@@ -22,8 +21,8 @@ class DataViewControlFragment : Fragment("Fields") {
 
     val columnNames: List<TableColumn<*, *>>? by param()
     val creation: Boolean? by param()
-    lateinit var fieldCombo: ComboBox<*>
-    lateinit var fieldText: TextField
+    private lateinit var fieldCombo: ComboBox<*>
+    private lateinit var fieldText: TextField
     override val root = form {
         fieldset(labelPosition = HORIZONTAL) {
             field(if (creation == false) "Column Name" else "Column Type") {
@@ -67,7 +66,6 @@ class DataViewControlFragment : Fragment("Fields") {
                         ColumnTypes.DOUBLE -> 0.0
                         ColumnTypes.BOOLEAN -> false
                         ColumnTypes.DATE -> Date.from(Instant.now())
-                        ColumnTypes.LIST -> listOf<String>()
                         else -> ""
                     }
             ))

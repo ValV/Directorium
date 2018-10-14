@@ -37,6 +37,7 @@ class Data : Controller() {
         try {
             File("data").mkdirs()
             File("data/index.json").writeText(sIndex)
+        } catch (e: FileNotFoundException) {
         } catch (e: RuntimeException) {
             println("Index save exception:\n${e.message}\n")
         }
@@ -48,6 +49,7 @@ class Data : Controller() {
             val index = JSON.parse(serialCategories, sIndex)
             categories.putAll(index.mapValues { it.value.observable() }.observable())
             fire(CommandTreePopulate(categories))
+        } catch (e: FileNotFoundException) {
         } catch (e: RuntimeException) {
             println("Index load exception:\n${e.message}\n")
         }
@@ -59,6 +61,7 @@ class Data : Controller() {
             try {
                 File("data/$path").deleteRecursively()
                 return
+            } catch (e: FileNotFoundException) {
             } catch (e: RuntimeException) {
                 println("Data save exception:\n${e.message}\n")
             }
@@ -83,6 +86,7 @@ class Data : Controller() {
             val sRecords = JSON.stringify(serialRecords, list)
             File("data/$path/fields.json").writeText(sFields)
             File("data/$path/records.json").writeText(sRecords)
+        } catch (e: FileNotFoundException) {
         } catch (e: RuntimeException) {
             println("Data save exception:\n${e.message}\n")
         }
@@ -139,6 +143,7 @@ class Data : Controller() {
             fire(Events.CommandTreePopulate(categories))
             try {
                 File("data/$category").deleteRecursively()
+            } catch (e: FileNotFoundException) {
             } catch (e: RuntimeException) {
                 println("Category delete exception:\n${e.message}\n")
             }
@@ -147,6 +152,7 @@ class Data : Controller() {
             categories[category]?.remove(section)
             try {
                 File("data/$category/$section").deleteRecursively()
+            } catch (e: FileNotFoundException) {
             } catch (e: RuntimeException) {
                 println("Category delete exception:\n${e.message}\n")
             }
@@ -231,7 +237,5 @@ class Data : Controller() {
         subscribe<CommandTableDeleteField> { deleteField(it.name) }
         subscribe<CommandCreateRecord> { createRecord(); fire(CommandTableResize) }
         subscribe<CommandDeleteRecord> { deleteRecord(); fire(CommandTableResize) }
-
-        //OnErrorAction.SKIP
     }
 }

@@ -85,7 +85,6 @@ class MainView : View("Directorium") {
             find<DataPrintFragment>(mapOf(
                     DataPrintFragment::source to dataView
             )).openModal()
-            println("Opened modal!") // FIXME: remove (debug)
         }
         // FIXME: remove DEBUG events handling
         subscribe<CommandDebug> { println("Debug Message!") }

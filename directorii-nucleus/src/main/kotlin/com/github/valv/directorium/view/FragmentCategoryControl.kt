@@ -12,7 +12,7 @@ import tornadofx.*
 class FragmentCategoryControl : Fragment("Sections") {
     private val sections = mutableListOf<String>().observable()
 
-    val categories: ObservableMap<String, ObservableList<String>>? by param()
+    val categories: MutableMap<String, ObservableList<String>>? by param()
     val creation: Boolean? by param()
 
     lateinit var category: ComboBox<String>
@@ -35,7 +35,7 @@ class FragmentCategoryControl : Fragment("Sections") {
                     )
                     isEditable = creation != false
                     if (creation == false) {
-                        value = items?.get(0)
+                        value = items?.getOrNull(0)
                     }
                 }
             }

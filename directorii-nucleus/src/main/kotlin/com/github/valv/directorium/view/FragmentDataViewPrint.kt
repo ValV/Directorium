@@ -2,8 +2,6 @@ package com.github.valv.directorium.view
 
 import com.github.valv.directorium.control.Data
 import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.value.ObservableValue
-import javafx.collections.ObservableList
 import javafx.geometry.Pos.TOP_CENTER
 import javafx.print.PageOrientation
 import javafx.print.Paper
@@ -15,7 +13,7 @@ import javafx.scene.layout.Priority.*
 import tornadofx.*
 
 class FragmentDataViewPrint : Fragment("Print preview") {
-    val source: TableView<ObservableList<ObservableValue<Any>>>? by param()
+    val source: TableView<MutableList<SimpleObjectProperty<Any>>>? by param()
 
     private val dataState: Data by inject()
     private var dataView: TableView<*> by singleAssign()

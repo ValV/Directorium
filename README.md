@@ -5,7 +5,7 @@
 
 1. Name: Directorium.
 2. Purpose: store user data.
-3. Functions: create, modify, store arbitrary user data schema; allow user input data, display and print the data.
+3. Functions: create, modify, store arbitrary user data schema; input, display, and print user data.
 4. Structure and GUI: main menu, category/section area, data view area, tool bar, category/section create/delete dialog, table column create/delete dialog, print dialog.
 
 ## Development
@@ -121,10 +121,16 @@ Data is saved automatically. Category/section data is saved on category/section 
 
 *Directorium* is an academic project, and on the current milestone it meets all requirements. But further improvements may be done:
 
--[ ] Add versioning into Maven
--[ ] Add KDoc to the source
--[ ] Add multi-page print support
--[ ] Add data export / import
--[ ] Add more field data types
--[ ] Add more column factories
--[ ] Add / specify *TODO*s
+- [ ] Add versioning into Maven
+
+- [ ] Add KDoc to the source
+
+- [ ] Add multi-page print support
+
+- [ ] Add data export / import
+
+- [ ] Add more field data types
+
+- [ ] Add more column factories
+
+- [ ] Add / specify *TODO*s

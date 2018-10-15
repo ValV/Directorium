@@ -1,5 +1,9 @@
 # Directorium
-*Directorium* is a *Kotlin/TornadoFX* application. It was created as academic project which has the following sections.
+*Directorium* is a *Kotlin/TornadoFX* application.
+
+![Directorium GUI](resources/directorium-gui.png)
+
+It was created as academic project which has the following sections.
 
 ## Specification
 
@@ -71,29 +75,55 @@ Working with *Directorium* implies creating custom data scheme. It is done by cr
 
 *Directorium* was developed to be simple, thus only two-level hierarchy (category/section) is supported. Any section must exist in a category, e.g. `Books/Sci-fi`. You can use main menu or tool bar buttons to create a section within a category.
 
+![Directorium section create](resources/directorium-section-create.png)
+
+In section create dialog one can specify names for both category and a section.
+
+![Directorium section create dialog](resources/directorium-section-create-dialog.png)
+
 #### Add a section into a category
 
 Adding sections is done in the same way as it is created, but choosing existing category.
 
 #### Remove a section from a category
 
-You can delete a section from a category via dialog as well.
+You can delete a section from a category via tool bar or main menu.
+
+![Directorium section delete](resources/directorium-section-delete.png)
+
+Removal dialog will appear as in case of creation.
+
+![Directorium section delete dialog](resources/directorium-section-delete-dialog.png)
 
 > When the last section is removed from a category, the category remains empty. This is done for convenience (not to create the same category again), but is you need to delete it as well, call the dialog again and remove the category with empty section.
 
+![Directorium section delete empty](resources/directorium-section-delete-dialog-empty.png)
+
 #### Add a column into the table view
 
+Column creation also has menu and tool bar controls.
+
+![Directorium field creation](resources/directorium-field-create.png)
+
 Column creation dialog is used to create column, where you can specify column name and it's data type.
+
+![Directorium field create dialog](resources/directorium-field-create-dialog.png)
 
 > Column name must be unique. Each column represents data field.
 
 #### Remove a column from the table view
 
+![Directorium field delete](resources/directorium-field-delete.png)
+
 Column removal is done via the dialog as well. You must specify column name to delete.
+
+![Directorium field delete dialog](resources/directorium-field-delete-dialog.png)
 
 #### Add a row into the table view
 
 Select menu item _Create Record_ or use a button with the same pictogram on the tool bar.
+
+![Directorium record create](resources/directorium-record-create.png)
 
 > Every new row is created next to selected one, or at the end of the table, if none is selected. Each row represents data record.
 
@@ -101,15 +131,23 @@ Select menu item _Create Record_ or use a button with the same pictogram on the 
 
 Row removal is done in the same way as its creation, but with _Delete Record_ menu item (or corresponding button on the tool bar).
 
+![Directorium record create](resources/directorium-record-delete.png)
+
 #### Print data view
 
 Select _Print_ menu item in the main menu, the print view will be opened. Initial size of the table view inside the print view will be adjusted to *A4 portrait* layout with maximum printable area for the default printer.
 
+![Directorium print](resources/directorium-print.png)
+
 Press button with the printer pictogram on the left to send the view to the selected printer.
+
+![Directorium print view](resources/directorium-print-view.png)
 
 > You can select another printer device in the dropdown list in the middle (initialy it is system default printer)
 
 > Button between printer selection list and close button allow you to configure selected printer.
+
+Printing into PDF example [can be found in resources](resources/directorium-print.pdf).
 
 #### Saving data
 

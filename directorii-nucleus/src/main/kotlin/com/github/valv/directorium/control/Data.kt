@@ -4,9 +4,7 @@ import com.github.valv.components.controls.useDateField
 import com.github.valv.components.controls.useDoubleField
 import com.github.valv.components.controls.useIntegerField
 import com.github.valv.directorium.control.Events.*
-import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.scene.control.TableColumn
 import kotlinx.serialization.Serializable
@@ -24,8 +22,8 @@ class Data : Controller() {
     data class Field(val name: String, val value: Any)
 
     val fields = mutableListOf<Field>()
-    val records = mutableListOf<MutableList<ObjectProperty<Any>>>().observable()
-    val categories = mutableMapOf<String, ObservableList<String>>()//.observable()
+    val records = mutableListOf<MutableList<SimpleObjectProperty<Any>>>().observable()
+    val categories = mutableMapOf<String, ObservableList<String>>()
 
     private val serialFields = Field.serializer().list
     private val serialRecords = StringSerializer.list.list
@@ -109,17 +107,17 @@ class Data : Controller() {
         try {
             val sRecords = File("data/$path/records.json").readText()
             val list = JSON.parse(serialRecords, sRecords)
-            val data =//: ObservableList<MutableList<ObjectProperty<Any>>> =
+            val data =
                     list.map {
                         it.mapIndexedTo(mutableListOf()) { index, value ->
                             when (fields[index].value) {
-                                is Int -> SimpleObjectProperty(value.toInt()) as ObjectProperty<Any>
-                                is Double -> SimpleObjectProperty(value.toDouble()) as ObjectProperty<Any>
-                                is Boolean -> SimpleObjectProperty(value.toBoolean()) as ObjectProperty<Any>
-                                is Date -> SimpleObjectProperty(Date(value)) as ObjectProperty<Any>
-                                else -> SimpleObjectProperty(value) as ObjectProperty<Any>
+                                is Int -> SimpleObjectProperty(value.toInt()) as SimpleObjectProperty<Any>
+                                is Double -> SimpleObjectProperty(value.toDouble()) as SimpleObjectProperty<Any>
+                                is Boolean -> SimpleObjectProperty(value.toBoolean()) as SimpleObjectProperty<Any>
+                                is Date -> SimpleObjectProperty(Date(value)) as SimpleObjectProperty<Any>
+                                else -> SimpleObjectProperty(value) as SimpleObjectProperty<Any>
                             }
-                        }//.observable()
+                        }
                     }.observable()
             records.addAll(data)
             fire(CommandTableResize)
@@ -164,10 +162,7 @@ class Data : Controller() {
         fire(CommandTableUpdate {
             items.forEach { it.add(SimpleObjectProperty(item)) }
             column(name, SimpleObjectProperty::class) {
-                setCellValueFactory {
-                    records[items.indexOf(it.value)][tableView.columns.indexOf(this)]
-                            as ObservableValue<SimpleObjectProperty<*>>
-                }
+                value { records[items.indexOf(it.value)][tableView.columns.indexOf(this)] }
                 when (item) {
                     is String -> {
                         (this as TableColumn<*, String?>).useTextField { requestResize() }
@@ -210,7 +205,7 @@ class Data : Controller() {
     private fun createRecord() {
         fire(CommandTableUpdate {
             if (columns.count() > 0) {
-                val list = mutableListOf<ObjectProperty<Any>>()//.observable()
+                val list = mutableListOf<SimpleObjectProperty<Any>>()
                 val current = selectionModel.selectedIndex
                 fields.forEach { list.add(SimpleObjectProperty(it.value)) }
                 records.add(current + 1, list)

@@ -1,6 +1,6 @@
 package com.github.valv.directorium.control
 
-import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.ObservableList
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -31,7 +31,7 @@ class Events {
     class CommandTableDeleteField(val name: TableColumn<*, *>?) : FXEvent()
 
     class CommandTableUpdate(
-            val update: TableView<MutableList<ObjectProperty<Any>>>.() -> Unit
+            val update: TableView<MutableList<SimpleObjectProperty<Any>>>.() -> Unit
     ) : FXEvent()
 
     object CommandTableResize : FXEvent()

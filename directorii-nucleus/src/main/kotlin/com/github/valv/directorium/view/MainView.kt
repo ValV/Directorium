@@ -5,14 +5,14 @@ import com.github.valv.directorium.control.Data
 import com.github.valv.directorium.control.Events.*
 import com.sun.javafx.scene.control.skin.TableViewSkinBase
 import javafx.application.Platform
-import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.TableView
 import tornadofx.*
 
 class MainView : View("Directorium") {
     private val dataState: Data by inject()
     private val categoryView = find(CategoryTreeFragment::class)
-    private lateinit var dataView: TableView<MutableList<ObjectProperty<Any>>>
+    private lateinit var dataView: TableView<MutableList<SimpleObjectProperty<Any>>>
 
     override val root = borderpane {
         addClass(Styles.grounding)

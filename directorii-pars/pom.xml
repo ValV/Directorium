@@ -18,7 +18,5 @@
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <plugins>
-        </plugins>
     </build>
 </project>

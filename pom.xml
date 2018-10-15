@@ -6,7 +6,7 @@
 
     <groupId>com.github.valv</groupId>
     <artifactId>directorium</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
 
     <name>Directorium</name>
@@ -24,8 +24,6 @@
         <kotlin.version>1.2.71</kotlin.version>
         <tornadofx.version>1.7.17</tornadofx.version>
         <serialization.version>0.6.2</serialization.version>
-        <directorii.nucleus.version>1.0</directorii.nucleus.version>
-        <directorii.pars.version>1.0</directorii.pars.version>
     </properties>
 
     <repositories>

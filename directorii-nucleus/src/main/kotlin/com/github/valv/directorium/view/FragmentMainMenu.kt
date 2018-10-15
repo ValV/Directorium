@@ -3,7 +3,7 @@ package com.github.valv.directorium.view
 import com.github.valv.directorium.control.Events.*
 import tornadofx.*
 
-class MainMenuFragment : Fragment() {
+class FragmentMainMenu : Fragment() {
     override val root = menubar {
         menu {
             text = "⌨ File"

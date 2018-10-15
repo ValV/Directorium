@@ -10,7 +10,7 @@ import tornadofx.*
 import java.time.Instant
 import java.util.*
 
-class DataViewControlFragment : Fragment("Fields") {
+class FragmentDataViewControl : Fragment("Fields") {
     private enum class ColumnTypes {
         STRING, INTEGER, DOUBLE, BOOLEAN, DATE;
 

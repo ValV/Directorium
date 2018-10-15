@@ -5,7 +5,7 @@ import javafx.geometry.Pos.BASELINE_RIGHT
 import javafx.scene.layout.Priority.ALWAYS
 import tornadofx.*
 
-class ToolPanelFragment : Fragment() {
+class FragmentToolPanel : Fragment() {
     override val root = vbox {
         hbox {
             toolbar {

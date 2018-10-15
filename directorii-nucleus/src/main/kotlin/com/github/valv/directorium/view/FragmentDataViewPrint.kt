@@ -14,7 +14,7 @@ import javafx.scene.control.TableView
 import javafx.scene.layout.Priority.*
 import tornadofx.*
 
-class DataPrintFragment : Fragment("Print preview") {
+class FragmentDataViewPrint : Fragment("Print preview") {
     val source: TableView<ObservableList<ObservableValue<Any>>>? by param()
 
     private val dataState: Data by inject()

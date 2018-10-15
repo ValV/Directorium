@@ -9,16 +9,16 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.TableView
 import tornadofx.*
 
-class MainView : View("Directorium") {
+class ViewMain : View("Directorium") {
     private val dataState: Data by inject()
-    private val categoryView = find(CategoryTreeFragment::class)
+    private val categoryView = find(FragmentCategoryTree::class)
     private lateinit var dataView: TableView<MutableList<SimpleObjectProperty<Any>>>
 
     override val root = borderpane {
         addClass(Styles.grounding)
         widthProperty().addListener { _, _, new -> fire(CommandResize(new.toDouble())) }
         top {
-            add(MainMenuFragment::class)
+            add(FragmentMainMenu::class)
         }
         left {
             vbox {
@@ -43,7 +43,7 @@ class MainView : View("Directorium") {
             }
         }
         bottom {
-            add(ToolPanelFragment::class)
+            add(FragmentToolPanel::class)
         }
     }
 
@@ -57,32 +57,32 @@ class MainView : View("Directorium") {
             Platform.exit()
         }
         subscribe<CommandCreateSection> {
-            find<CategoryControlFragment>(mapOf(
-                    CategoryControlFragment::categories to dataState.categories,
-                    CategoryControlFragment::creation to true
+            find<FragmentCategoryControl>(mapOf(
+                    FragmentCategoryControl::categories to dataState.categories,
+                    FragmentCategoryControl::creation to true
             )).openModal()
         }
         subscribe<CommandDeleteSection> {
-            find<CategoryControlFragment>(mapOf(
-                    CategoryControlFragment::categories to dataState.categories,
-                    CategoryControlFragment::creation to false
+            find<FragmentCategoryControl>(mapOf(
+                    FragmentCategoryControl::categories to dataState.categories,
+                    FragmentCategoryControl::creation to false
             )).openModal()
         }
         subscribe<CommandCreateField> {
-            find<DataViewControlFragment>(mapOf(
-                    DataViewControlFragment::columnNames to dataView.columns,
-                    DataViewControlFragment::creation to true
+            find<FragmentDataViewControl>(mapOf(
+                    FragmentDataViewControl::columnNames to dataView.columns,
+                    FragmentDataViewControl::creation to true
             )).openModal()
         }
         subscribe<CommandDeleteField> {
-            find<DataViewControlFragment>(mapOf(
-                    DataViewControlFragment::columnNames to dataView.columns,
-                    DataViewControlFragment::creation to false
+            find<FragmentDataViewControl>(mapOf(
+                    FragmentDataViewControl::columnNames to dataView.columns,
+                    FragmentDataViewControl::creation to false
             )).openModal()
         }
         subscribe<CommandPrint> {
-            find<DataPrintFragment>(mapOf(
-                    DataPrintFragment::source to dataView
+            find<FragmentDataViewPrint>(mapOf(
+                    FragmentDataViewPrint::source to dataView
             )).openModal()
         }
         runLater {

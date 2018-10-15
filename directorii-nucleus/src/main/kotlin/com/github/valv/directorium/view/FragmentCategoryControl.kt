@@ -9,7 +9,7 @@ import javafx.scene.control.ComboBox
 import javafx.scene.layout.Priority.ALWAYS
 import tornadofx.*
 
-class CategoryControlFragment : Fragment("Sections") {
+class FragmentCategoryControl : Fragment("Sections") {
     private val sections = mutableListOf<String>().observable()
 
     val categories: ObservableMap<String, ObservableList<String>>? by param()

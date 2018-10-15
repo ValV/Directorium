@@ -5,7 +5,7 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.Priority.ALWAYS
 import tornadofx.*
 
-class CategoryTreeFragment : Fragment() {
+class FragmentCategoryTree : Fragment() {
     override val root = treeview<Any> {
         root = TreeItem()
         isShowRoot = false

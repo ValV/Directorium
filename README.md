@@ -67,7 +67,7 @@ com
 
 Each file inside a package represents a separate class. Some classes have nested classes (marked as composition on the diagram).
 
-![Directorium inter-package dependencies](resources/directorium-inter-package-dependencies.png)
+![Directorium class diagram](resources/directorium-classes.png)
 
 Class purpose:
 

@@ -3,7 +3,7 @@
 
 ![Directorium GUI](resources/directorium-gui.png)
 
-It was created as academic project which has the following sections.
+It was created as an academic project which has the following sections.
 
 ## Specification
 
@@ -24,7 +24,69 @@ It was created as academic project which has the following sections.
 
 ## Program structure
 
-*TODO:* class diagram, module diagram, class purpose.
+Modules are represented by packages. Diagram below shows project-specific packages.
+
+![Directorium packages](resources/directorium-packages.png)
+
+Packages `directorium` and `components` are separated with build system into `directorii-nucleus` and `directorii-pars` artifacts respectively.
+
+Contents of `directorii-nucleus`:
+
+
+```
+com
+└── github
+    └── valv
+        └── directorium
+            ├── app
+            │   ├── Directorium.kt
+            │   └── Styles.kt
+            ├── control
+            │   ├── Data.kt
+            │   └── Events.kt
+            └── view
+                ├── FragmentCategoryControl.kt
+                ├── FragmentCategoryTree.kt
+                ├── FragmentDataViewControl.kt
+                ├── FragmentDataViewPrint.kt
+                ├── FragmentMainMenu.kt
+                ├── FragmentToolPanel.kt
+                └── ViewMain.kt
+```
+
+Contents of `directorii-pars`:
+
+```
+com
+└── github
+    └── valv
+        └── components
+            └── controls
+                └── GenericCell.kt
+```
+
+Each file inside a package represents a separate class. Some classes have nested classes (marked as composition on the diagram).
+
+![Directorium inter-package dependencies](resources/directorium-inter-package-dependencies.png)
+
+Class purpose:
+
+* _**Directorium**_ is an *App* subclass, application instance, uses *ViewMain* and *Styles*;
+* _**Styles**_ is a *Stylesheet* subclass that us used by *Directorium*, provides visual effects to GUI components;
+* _**GenericCell**_ is a *TableCell* subclass with extension functions that is used by *Data* class to build custom cell factories and text formatters for *TableView* in *ViewMain* class;
+* _**Data**_ is a *Controller* subclass that contains main application logic, it has *Field* nested class for table view columns' metadata, provides serialization and file i/o for the application, depends on *Events* and *GenericCell*;
+* _**Events**_ is a custom class (*Any* subclass by default) that contains nested classes to represent events to be sent to *MessageBus*, each of them is a *FXEvent* subclass;
+* _**ViewMain**_ is a *View* subclass and is the main window class that comprises another parts of GUI as *Fragment* classes (*FragmentCategoryControl* and *FragmentDataViewControl* are created dynamically with parameters, the rest fragments are created statically), depends on *Data* and *Events*, fires events to *MessageBus*;
+* _**FragmentMainMenu**_ is a *Fragment* subclass that contains main menu and its submenus, depends on *Events*, fires events to *MessageBus*;
+* _**FragmentCategoryTree**_ is a *Fragment* subclass that contains pre-configured *TreeView* instance with custom cell formatter and listeners, depends on *Events*, fires events to *MessageBus*;
+* _**FragmentToolPanel**_ is a *Fragment* subclass that contains tool bars with buttons analogous to main menu items for quick access, depends on *Events*, fires events to *MessageBus*;
+* _**FragmentDataViewPrint**_ is a *Fragment* subclass that contains print preview dialog with another *TableView* and printer controls, depends on *Data*;
+* _**FragmentCategoryControl**_ is a *Fragment* subclass that contains category/section creation/deletion dialog, depends on *Events*, fires events to *MessageBus*, takes parameters on creation;
+* _**FragmentDataViewControl**_ is a *Fragment* subclass that contains field creation/deletion dialog with nested *ColumnTypes* enum class (for fixed set of available column types), depends on *Events*, fires events to *MessageBus*, takes parameters on creation.
+
+> Classes that depend on *Events* class have *subscribers* (listeners) for *MessageBus*. All classes depend on *tornadofx* package.
+
+> All fragments are able to run separately from the main view (that ability was used during development).
 
 ## Implementation
 
@@ -171,4 +233,6 @@ Data is saved automatically. Category/section data is saved on category/section 
 
 - [ ] Add more column factories
 
-- [ ] Add / specify *TODO*s
+- [x] Add / specify *TODO*s
+
+- [ ] Add i18n

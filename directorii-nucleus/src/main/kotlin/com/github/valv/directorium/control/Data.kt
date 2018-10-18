@@ -7,17 +7,29 @@ import com.github.valv.directorium.control.Events.*
 import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.ObservableList
 import javafx.scene.control.TableColumn
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringSerializer
 import kotlinx.serialization.json.JSON
-import kotlinx.serialization.list
-import kotlinx.serialization.map
 import tornadofx.*
 import java.io.File
 import java.io.FileNotFoundException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class Data : Controller() {
+    @Serializer(forClass = Date::class)
+    object DateSerializer : KSerializer<Date> {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS")
+
+        override fun save(output: KOutput, obj: Date) {
+            output.writeStringValue(dateFormat.format(obj))
+        }
+
+        override fun load(input: KInput): Date {
+            return dateFormat.parse(input.readStringValue())
+        }
+    }
+
     @Serializable
     data class Field(val name: String, val value: Any)
 
@@ -25,9 +37,13 @@ class Data : Controller() {
     val records = mutableListOf<MutableList<SimpleObjectProperty<Any>>>().observable()
     val categories = mutableMapOf<String, ObservableList<String>>()
 
+    private val dateFormat = DateSerializer.dateFormat
     private val serialFields = Field.serializer().list
     private val serialRecords = StringSerializer.list.list
     private val serialCategories = (StringSerializer to StringSerializer.list).map
+    private val serialContext = SerialContext().apply {
+        registerSerializer(Date::class, DateSerializer)
+    }
 
     fun saveIndex() {
         val index = categories.mapValues { it.value.toList() }
@@ -75,12 +91,12 @@ class Data : Controller() {
                         is Int -> value.toString()
                         is Double -> value.toString()
                         is Boolean -> value.toString()
-                        is Date -> value.toString()
+                        is Date -> dateFormat.format(value)
                         else -> ""
                     }
                 }.toList()
             }
-            val sFields = JSON.stringify(serialFields, fields)
+            val sFields = JSON(context = serialContext).stringify(serialFields, fields)
             val sRecords = JSON.stringify(serialRecords, list)
             File("data/$path/fields.json").writeText(sFields)
             File("data/$path/records.json").writeText(sRecords)
@@ -97,7 +113,7 @@ class Data : Controller() {
         if (path.isEmpty()) return
         try {
             val sFields = File("data/$path/fields.json").readText()
-            (JSON.parse(serialFields, sFields)).forEach { createField(it.name, it.value) }
+            (JSON(context = serialContext).parse(serialFields, sFields)).forEach { createField(it.name, it.value) }
         } catch (e: FileNotFoundException) {
             return
         } catch (e: RuntimeException) {
@@ -114,7 +130,7 @@ class Data : Controller() {
                                 is Int -> SimpleObjectProperty(value.toInt()) as SimpleObjectProperty<Any>
                                 is Double -> SimpleObjectProperty(value.toDouble()) as SimpleObjectProperty<Any>
                                 is Boolean -> SimpleObjectProperty(value.toBoolean()) as SimpleObjectProperty<Any>
-                                is Date -> SimpleObjectProperty(Date(value)) as SimpleObjectProperty<Any>
+                                is Date -> SimpleObjectProperty(dateFormat.parse(value)) as SimpleObjectProperty<Any>
                                 else -> SimpleObjectProperty(value) as SimpleObjectProperty<Any>
                             }
                         }

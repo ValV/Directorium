@@ -90,7 +90,114 @@ Class purpose:
 
 ## Implementation
 
-*TODO:* functions description (sequence diagrams).
+Interaction between objects in the applicaion is shown on sequence diagram.
+
+![Directorium object interaction](resources/directorium-sequence.png)
+
+Implementation details for every class comprise function description. All classes inside `view` package have functional type safe builders, provided by *TornadoFX* framework. Type safe GUI builders are nested.
+
+### ViewMain
+
+Main view component has functional builders for `root` node and subscribers in its `init` block. Main view subscribes for events that require explicit interaction with application (something that has not been implemented via *JavaFX* reactive mechanisms). Those events are:
+
+* *CommandQuit* - request application termination;
+* *CommandPrint* - create and open print dialog;
+* *CommandCreateSection* - create and open category/section dialog with create option;
+* *CommandDeleteSection* - create and open category/section dialog with delete option;
+* *CommandCreateField* - create and open field dialog with create option;
+* *CommandDeleteField* - create and open filed dialog with delete option.
+
+### Data
+
+Controller for main application logic. It does not contain any builders, but implements functions and sets subscribers for events that do not require explicit GUI interaction. Those are:
+
+* *CommandTreeLoadSection* - request serialize and save current data view, then load and deserialize new data view, triggered on tree view item selected, calls *saveData* and *loadData* functions;
+* *CommandTreeCreateSection* - request creation of specific category/section association, calls *createSection* function;
+* *CommandTreeDeleteSection* - request deletion of specific category/section association, calls *deleteSection* function;
+* *CommandTableCreateField* - request creation of specific column inside main table view, calls *createField* function;
+* *CommandTableDeleteField* - request deletion of specific column inside main table view, calls *deleteField* function;
+* *CommandCreateRecord* - request creation of a row inside main table view, calls *createRecord* function;
+* *CommandDeleteRecord* - request deletion of a row inside main table view, calls *deleteRecord* function.
+
+All data manipulation inside the data view is provided by these functions:
+
+* *saveIndex* - serializes and writes to disk tree view (category/section) data
+* *loadIndex* - loads from disk and deserializes tree view (category/section) data;
+* *saveData* - serializes and writes to disk main table view (data view) contents;
+* *loadData* - loads from disk and deserializes main table view (data view) contents;
+* *createSection* - creates a new category/section association the tree view (or adds a new section into a category);
+* *deleteSection* - removes a section from a category, or a category, if it has no sections;
+* *createField* - creates a new field in data view (a column in the main table view) with specified name and data type;
+* *deleteField* - removes specified field from data view (removes a column by name from the main table view, thus column names are unique);
+* *createRecord* - creates a new record in data view (a row inside the main table view) below selected, or at the end if none selected;
+* *deleteRecord* - removes selected record from data view (selected row in tha main table view), of the last if none selected.
+
+### FragmentCategoryControl
+
+Category control fragment provides a dialog window to specify category/section parameters. It comprises combo boxes and buttons inside *TornadoFX* form. All functionality is done inside `root` builders. Events are triggered `onAction`:
+
+* *CommandTreeCreateSection*
+* *CommandTreeDeleteSection*
+
+### FragmentDataViewControl
+
+Data view control fragment provides a dialog window to specify data view field parameters. It comprises conditionally created combo boxes and buttons inside a form (like in category control fragment). Functions that are separated from builders:
+
+* *create* - checks column name uniqueness, sets default value for selected type, and fires *CommandTreeCreateField* event;
+* *delete* - just fires *CommandTreeDeleteField* with selected field name as a parameter.
+
+### FragmentDataViewPrint
+
+Data view print fragment provides a dialog window with another one table view, which is resized an aligned to fit default printer's page layout. The dialog provides printer configuration controls as well: print button, printer selection combo, and printer configuration button.
+
+> In order to be able to configure a printer, only one instance of *PrinterJob* is created per fragment
+ 
+Printing-specific functions added to the fragment:
+
+* *print* - calls *printPage* for the current printer job instance;
+* *printConfig* - calls *showPageSetupDialog* for the current printer job;
+* *printBoundsSet* - changes printing table view size according to the new page layout for the current printer job, invoked by *pageLayoutProperty* listener.
+
+Item selection in printer combo just changes current printer job's *printer* parameter.
+
+### FragmentCategoryTree
+
+Tree view for category/section is separated to minimize program code inside main view. It has customized *populate* function, on *selectedItemProperty* changes fires *CommandTreeLoadSection*.
+
+### FragmentMainMenu
+
+Comprises menu bar with menus, fires events:
+
+* *CommandPrint*
+* *CommandQuit*
+* *CommandCreateSection*
+* *CommandDeleteSection*
+* *CommandCreateField*
+* *CommandDeleteField*
+* *CommandCreateRecord*
+* *CommandDeleteRecord*
+
+### FragmentToolPanel
+
+Comprises vertical box with status label and horizontal box. Horizontal box contains two tool bars with buttons that fire events:
+
+* *CommandQuit*
+* *CommandCreateSection*
+* *CommandDeleteSection*
+* *CommandCreateField*
+* *CommandDeleteField*
+* *CommandCreateRecord*
+* *CommandDeleteRecord*
+
+Subscribes for *CommandStatusDisplay* to set status label's text to various messages.
+
+### Events
+
+Events class has only event definitions. All events are objects from *FXEvent* (and its subclasses), their purpose is to transmit data inside properties (declared as classes), or transmit a message by their instance (declared as objects).
+
+### Styles
+
+Type safe builders for *JavaFX CSS*, provided by *TornadoFX*. This class is used for shaping controls.
 
 ## Users guide
 

@@ -9,18 +9,18 @@ It was created as an academic project which has the following sections.
 
 1. Name: Directorium.
 2. Purpose: store user data.
-3. Functions: create, modify, store arbitrary user data schema; input, display, and print user data.
+3. Functionality: create, modify, store arbitrary user data schema; input, display, and print user data.
 4. Structure and GUI: main menu, category/section area, data view area, tool bar, category/section create/delete dialog, table column create/delete dialog, print dialog.
 
 ## Development
 
-1. Language: **Kotlin**.
-2. Framework: **TornadoFX**.
-3. Platform: **JavaFX**.
-4. IDE: **IntelliJ IDEA**.
-5. Build system: **Maven**.
-6. Libraries: jdk8-openjdk, jre8-openjdk, java-openjfx, tornadofx, kotlin-stdlib, kotlin-test, kotlin-reflect, kotlinx-serialization-runtime.
-7. Host system: **Archlinux**.
+1. Language: _**Kotlin**_.
+2. Framework: _**TornadoFX**_.
+3. Platform: _**JavaFX**_.
+4. IDE: _**IntelliJ IDEA**_.
+5. Build system: _**Maven**_.
+6. Libraries: _jdk8-openjdk_, _jre8-openjdk_, _java-openjfx_, _tornadofx_, _kotlin-stdlib_, _kotlin-test_, _kotlin-reflect_, _kotlinx-serialization-runtime_.
+7. Host system: _**Archlinux**_.
 
 ## Program structure
 
@@ -90,7 +90,7 @@ Class purpose:
 
 ## Implementation
 
-Interaction between objects in the applicaion is shown on sequence diagram.
+Interaction between components of the applicaion is shown on the sequence diagram.
 
 ![Directorium object interaction](resources/directorium-sequence.png)
 
@@ -121,7 +121,7 @@ Controller for main application logic. It does not contain any builders, but imp
 
 All data manipulation inside the data view is provided by these functions:
 
-* *saveIndex* - serializes and writes to disk tree view (category/section) data
+* *saveIndex* - serializes and writes to disk tree view (category/section) data;
 * *loadIndex* - loads from disk and deserializes tree view (category/section) data;
 * *saveData* - serializes and writes to disk main table view (data view) contents;
 * *loadData* - loads from disk and deserializes main table view (data view) contents;
@@ -136,8 +136,8 @@ All data manipulation inside the data view is provided by these functions:
 
 Category control fragment provides a dialog window to specify category/section parameters. It comprises combo boxes and buttons inside *TornadoFX* form. All functionality is done inside `root` builders. Events are triggered `onAction`:
 
-* *CommandTreeCreateSection*
-* *CommandTreeDeleteSection*
+* *CommandTreeCreateSection*;
+* *CommandTreeDeleteSection*.
 
 ### FragmentDataViewControl
 
@@ -150,7 +150,7 @@ Data view control fragment provides a dialog window to specify data view field p
 
 Data view print fragment provides a dialog window with another one table view, which is resized an aligned to fit default printer's page layout. The dialog provides printer configuration controls as well: print button, printer selection combo, and printer configuration button.
 
-> In order to be able to configure a printer, only one instance of *PrinterJob* is created per fragment
+> In order to be able to configure a printer, only one instance of *PrinterJob* is created per fragment.
  
 Printing-specific functions added to the fragment:
 
@@ -168,26 +168,26 @@ Tree view for category/section is separated to minimize program code inside main
 
 Comprises menu bar with menus, fires events:
 
-* *CommandPrint*
-* *CommandQuit*
-* *CommandCreateSection*
-* *CommandDeleteSection*
-* *CommandCreateField*
-* *CommandDeleteField*
-* *CommandCreateRecord*
-* *CommandDeleteRecord*
+* *CommandPrint*;
+* *CommandQuit*;
+* *CommandCreateSection*;
+* *CommandDeleteSection*;
+* *CommandCreateField*;
+* *CommandDeleteField*;
+* *CommandCreateRecord*;
+* *CommandDeleteRecord*.
 
 ### FragmentToolPanel
 
 Comprises vertical box with status label and horizontal box. Horizontal box contains two tool bars with buttons that fire events:
 
-* *CommandQuit*
-* *CommandCreateSection*
-* *CommandDeleteSection*
-* *CommandCreateField*
-* *CommandDeleteField*
-* *CommandCreateRecord*
-* *CommandDeleteRecord*
+* *CommandQuit*;
+* *CommandCreateSection*;
+* *CommandDeleteSection*;
+* *CommandCreateField*;
+* *CommandDeleteField*;
+* *CommandCreateRecord*;
+* *CommandDeleteRecord*.
 
 Subscribes for *CommandStatusDisplay* to set status label's text to various messages.
 
@@ -312,7 +312,7 @@ Press button with the printer pictogram on the left to send the view to the sele
 
 ![Directorium print view](resources/directorium-print-view.png)
 
-> You can select another printer device in the dropdown list in the middle (initialy it is system default printer)
+> You can select another printer device in the dropdown list in the middle (initialy it is system default printer).
 
 > Button between printer selection list and close button allow you to configure selected printer.
 
@@ -328,18 +328,18 @@ Data is saved automatically. Category/section data is saved on category/section 
 
 *Directorium* is an academic project, and on the current milestone it meets all requirements. But further improvements may be done:
 
-- [ ] Add versioning into Maven
+- [ ] Add versioning into Maven.
 
-- [ ] Add KDoc to the source
+- [ ] Add KDoc to the source.
 
-- [ ] Add multi-page print support
+- [ ] Add multi-page print support.
 
-- [ ] Add data export / import
+- [ ] Add data export / import.
 
-- [ ] Add more field data types
+- [ ] Add more field data types.
 
-- [ ] Add more column factories
+- [ ] Add more column factories.
 
-- [x] Add / specify *TODO*s
+- [x] Add / specify *TODO*s.
 
-- [ ] Add i18n
+- [ ] Add i18n.

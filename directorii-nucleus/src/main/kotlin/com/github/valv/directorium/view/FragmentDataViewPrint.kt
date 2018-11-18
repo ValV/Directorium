@@ -10,8 +10,10 @@ import javafx.print.PrinterJob
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority.*
+import kotlinx.serialization.ImplicitReflectionSerializer
 import tornadofx.*
 
+@ImplicitReflectionSerializer
 class FragmentDataViewPrint : Fragment("Print preview") {
     val source: TableView<MutableList<SimpleObjectProperty<Any>>>? by param()
 

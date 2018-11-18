@@ -7,8 +7,10 @@ import com.sun.javafx.scene.control.skin.TableViewSkinBase
 import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.TableView
+import kotlinx.serialization.ImplicitReflectionSerializer
 import tornadofx.*
 
+@ImplicitReflectionSerializer
 class ViewMain : View("Directorium") {
     private val dataState: Data by inject()
     private val categoryView = find(FragmentCategoryTree::class)

@@ -8,25 +8,29 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.ObservableList
 import javafx.scene.control.TableColumn
 import kotlinx.serialization.*
+import kotlinx.serialization.context.SimpleModule
+import kotlinx.serialization.internal.SerialClassDescImpl
 import kotlinx.serialization.internal.StringSerializer
-import kotlinx.serialization.json.JSON
 import tornadofx.*
 import java.io.File
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 
+@ImplicitReflectionSerializer
 class Data : Controller() {
-    @Serializer(forClass = Date::class)
-    object DateSerializer : KSerializer<Date> {
+    @Serializer(forClass = java.util.Date::class)
+    object DateSerializer : KSerializer<java.util.Date> {
+        override val descriptor: SerialDescriptor =
+                object : SerialClassDescImpl("java.util.Date") {}
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS")
 
-        override fun save(output: KOutput, obj: Date) {
-            output.writeStringValue(dateFormat.format(obj))
+        override fun serialize(output: Encoder, obj: Date) {
+            output.encode(dateFormat.format(obj))
         }
 
-        override fun load(input: KInput): Date {
-            return dateFormat.parse(input.readStringValue())
+        override fun deserialize(input: Decoder): Date {
+            return dateFormat.parse(input.decodeString())
         }
     }
 
@@ -41,13 +45,13 @@ class Data : Controller() {
     private val serialFields = Field.serializer().list
     private val serialRecords = StringSerializer.list.list
     private val serialCategories = (StringSerializer to StringSerializer.list).map
-    private val serialContext = SerialContext().apply {
-        registerSerializer(Date::class, DateSerializer)
+    private val serialContext = kotlinx.serialization.json.JSON().apply {
+        install(SimpleModule(java.util.Date::class, DateSerializer))
     }
 
     fun saveIndex() {
         val index = categories.mapValues { it.value.toList() }
-        val sIndex = JSON.stringify(serialCategories, index)
+        val sIndex = serialContext.stringify(serialCategories, index)
         try {
             File("data").mkdirs()
             File("data/index.json").writeText(sIndex)
@@ -60,7 +64,7 @@ class Data : Controller() {
     fun loadIndex() {
         try {
             val sIndex = File("data/index.json").readText()
-            val index = JSON.parse(serialCategories, sIndex)
+            val index = serialContext.parse(serialCategories, sIndex)
             categories.putAll(index.mapValues { it.value.observable() }.observable())
             fire(CommandTreePopulate(categories))
         } catch (e: FileNotFoundException) {
@@ -96,8 +100,8 @@ class Data : Controller() {
                     }
                 }.toList()
             }
-            val sFields = JSON(context = serialContext).stringify(serialFields, fields)
-            val sRecords = JSON.stringify(serialRecords, list)
+            val sFields = serialContext.stringify(serialFields, fields)
+            val sRecords = serialContext.stringify(serialRecords, list)
             File("data/$path/fields.json").writeText(sFields)
             File("data/$path/records.json").writeText(sRecords)
         } catch (e: FileNotFoundException) {
@@ -113,7 +117,9 @@ class Data : Controller() {
         if (path.isEmpty()) return
         try {
             val sFields = File("data/$path/fields.json").readText()
-            (JSON(context = serialContext).parse(serialFields, sFields)).forEach { createField(it.name, it.value) }
+            (serialContext.parse(serialFields, sFields)).forEach {
+                createField(it.name, it.value)
+            }
         } catch (e: FileNotFoundException) {
             return
         } catch (e: RuntimeException) {
@@ -122,7 +128,7 @@ class Data : Controller() {
         }
         try {
             val sRecords = File("data/$path/records.json").readText()
-            val list = JSON.parse(serialRecords, sRecords)
+            val list = serialContext.parse(serialRecords, sRecords)
             val data =
                     list.map {
                         it.mapIndexedTo(mutableListOf()) { index, value ->
